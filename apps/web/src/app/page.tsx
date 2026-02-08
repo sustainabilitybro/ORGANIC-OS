@@ -1,115 +1,137 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Home() {
   const modules = [
     {
       name: 'Identity',
-      slug: 'identity',
-      description: 'Discover and clarify your authentic self',
+      href: '/identity',
       icon: '👤',
-      color: 'from-accent-primary to-emerald-700'
+      description: 'Discover your authentic self',
+      color: 'from-emerald-500 to-teal-600',
     },
     {
       name: 'Sensory',
-      slug: 'sensory',
-      description: 'Explore and optimize your human senses',
+      href: '/sensory',
       icon: '👁️',
-      color: 'from-blue-400 to-blue-700'
+      description: 'Explore and optimize your senses',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       name: 'Emotional',
-      slug: 'emotional',
-      description: 'Master emotional intelligence',
+      href: '/emotional',
       icon: '💚',
-      color: 'from-pink-400 to-pink-700'
+      description: 'Master emotional intelligence',
+      color: 'from-green-500 to-emerald-600',
     },
     {
       name: 'Wellness',
-      slug: 'wellness',
-      description: 'Holistic health and vitality',
+      href: '/wellness',
       icon: '🌿',
-      color: 'from-green-400 to-green-700'
+      description: 'Holistic health & natural remedies',
+      color: 'from-lime-500 to-green-600',
     },
     {
       name: 'Recovery',
-      slug: 'recovery',
-      description: 'Burnout prevention and stress management',
+      href: '/recovery',
       icon: '🔋',
-      color: 'from-amber-400 to-amber-700'
+      description: 'Burnout prevention & stress management',
+      color: 'from-amber-500 to-orange-600',
     },
     {
       name: 'Communication',
-      slug: 'communication',
-      description: 'Master the art of expression',
+      href: '/communication',
       icon: '🎤',
-      color: 'from-purple-400 to-purple-700'
-    }
-  ]
+      description: 'Public speaking & expression',
+      color: 'from-purple-500 to-violet-6 from-violet-500 to-purple-600',
+    },
+  ];
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen bg-neutral-950">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background-primary via-background-secondary to-background-tertiary" />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-neutral-950 to-neutral-950" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
         
-        {/* Animated orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-warm/10 rounded-full blur-3xl animate-pulse-slow" />
-
-        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-6xl md:text-8xl font-display font-bold mb-6">
-            <span className="text-gradient">Organic OS</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-text-secondary max-w-3xl mx-auto mb-12">
-            The Operating System for Being Human.
-            <br />
-            Identity. Senses. Emotions. Wellness. Recovery. Communication.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/dashboard" className="btn-primary text-lg px-8 py-4">
-              Enter Your OS →
-            </Link>
-            <button className="btn-secondary text-lg px-8 py-4">
-              Learn More
-            </button>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+          <div className="text-center">
+            <h1 className="text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Organic OS
+              </span>
+            </h1>
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-8">
+              The Operating System for Being Human. A unified platform for identity, senses, 
+              emotions, wellness, recovery, and expression.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Link
+                href="/dashboard"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+              >
+                Enter Platform →
+              </Link>
+              <a
+                href="#modules"
+                className="bg-neutral-800 hover:bg-neutral-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+              >
+                Explore Modules
+              </a>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <span className="text-text-muted text-sm">↓</span>
+      {/* Vision Section */}
+      <section className="py-20 border-y border-neutral-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: '🧠',
+                title: 'Know Yourself',
+                description: 'Identity, values, and purpose discovery through structured introspection.',
+              },
+              {
+                icon: '⚖️',
+                title: 'Balance Your Life',
+                description: 'Stress management, burnout prevention, and sustainable energy.',
+              },
+              {
+                icon: '🌱',
+                title: 'Grow Holistically',
+                description: 'Natural remedies, emotional mastery, and expressive communication.',
+              },
+            ].map((item) => (
+              <div key={item.title} className="text-center">
+                <span className="text-4xl mb-4 block">{item.icon}</span>
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                <p className="text-neutral-400">{item.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Modules Section */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-4">
-            Six Modules.
-            <br />
-            <span className="text-text-secondary">One Integrated System.</span>
-          </h2>
-          <p className="text-text-secondary text-center text-lg max-w-2xl mx-auto mb-16">
-            Every aspect of human development, interconnected and optimized for your growth.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section id="modules" className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Platform Modules</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {modules.map((module) => (
-              <Link 
-                key={module.slug} 
-                href={`/dashboard/${module.slug}`}
-                className="card-hover group"
+              <Link
+                key={module.name}
+                href={module.href}
+                className="group relative overflow-hidden bg-neutral-900 border border-neutral-800 rounded-2xl p-6 hover:border-neutral-700 transition-all hover:scale-[1.02]"
               >
-                <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${module.color} flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  {module.icon}
+                <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
+                <span className="text-4xl mb-4 block">{module.icon}</span>
+                <h3 className="text-xl font-semibold mb-2">{module.name}</h3>
+                <p className="text-neutral-400 text-sm">{module.description}</p>
+                <div className="mt-4 flex items-center text-sm text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Access Module →
                 </div>
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-accent-primary transition-colors">
-                  {module.name}
-                </h3>
-                <p className="text-text-secondary">
-                  {module.description}
-                </p>
               </Link>
             ))}
           </div>
@@ -117,35 +139,43 @@ export default function Home() {
       </section>
 
       {/* AI Coach Section */}
-      <section className="py-24 px-6 bg-background-secondary/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-accent-primary font-medium mb-4 block">AI-POWERED</span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-            Your Personal AI Coach
-          </h2>
-          <p className="text-text-secondary text-lg mb-8 max-w-2xl mx-auto">
-            Powered by MiniMax. Always learning. Always available. 
-            Get personalized guidance across every module of your organic operating system.
+      <section className="py-20 bg-neutral-900/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-4xl mb-4 block">🤖</span>
+          <h2 className="text-3xl font-bold mb-4">AI Coaching Throughout</h2>
+          <p className="text-neutral-400 mb-8">
+            Your personal AI coach guides you through every module, providing personalized 
+            insights, motivation, and recommendations based on your progress.
           </p>
-          <Link href="/dashboard" className="btn-primary text-lg px-8 py-4">
-            Meet Your Coach →
-          </Link>
+          <div className="grid md:grid-cols-3 gap-4 text-left">
+            {[
+              'Personalized feedback on exercises',
+              'Adaptive difficulty based on your growth',
+              'Integration across all modules',
+            ].map((feature) => (
+              <div key={feature} className="flex items-center gap-2 text-sm">
+                <span className="text-emerald-400">✓</span>
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-surface-secondary">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-text-muted">
-            © 2026 Organic OS. Built by humans, for humans.
-          </p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="link text-sm">Privacy</Link>
-            <Link href="/terms" className="link text-sm">Terms</Link>
-            <Link href="/docs" className="link text-sm">Documentation</Link>
+      <footer className="py-12 border-t border-neutral-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <p className="font-semibold">Organic OS</p>
+              <p className="text-sm text-neutral-400">The Operating System for Being Human</p>
+            </div>
+            <p className="text-sm text-neutral-500">
+              Built with Next.js + Supabase + MiniMax
+            </p>
           </div>
         </div>
       </footer>
-    </main>
-  )
+    </div>
+  );
 }
