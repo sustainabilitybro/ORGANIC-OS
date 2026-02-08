@@ -93,7 +93,9 @@ The ${currentTopic.name.toLowerCase()} methodology:
                 placeholder={`Ask about ${currentTopic.name.toLowerCase()}...`}
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                className="w-full px-4 py-3 bg-background-secondary border border-surface-secondary rounded-lg text-text-primary placeholder-text-muted resize-none min-h-[100mbottom-4">
+                className="w-full px-4 py-3 bg-background-secondary border border-surface-secondary rounded-lg text-text-primary placeholder-text-muted resize-none min-h-[100px]"
+              />
+              <div className="mt-4">
                 <Button onClick={handleAskAI} disabled={loading || !userInput.trim()}>
                   {loading ? <><Spinner className="mr-2" />Thinking...</> : 'Get Coaching →'}
                 </Button>
