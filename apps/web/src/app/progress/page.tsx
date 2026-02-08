@@ -37,7 +37,7 @@ export default function ProgressPage() {
   const overallXP = progress.reduce((sum, p) => sum + p.xp, 0);
   const overallLevel = Math.floor(overallXP / 500) + 1;
   const totalCompleted = progress.reduce((sum, p) => sum + p.completedItems, 0);
-  const totalItemssum, p) = progress.reduce(( => sum + p.totalItems, 0);
+  const totalItems = progress.reduce((sum, p) => sum + p.totalItems, 0);
   const overallStreak = Math.max(...progress.map(p => p.streak));
 
   const getColorClass = (color: string) => ({
