@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background-primary: #0a0f0d;
+    --background-secondary: #141a16;
+    --background-tertiary: #1e2621;
+    --surface-primary: #1a221d;
+    --surface-secondary: #242e29;
+    --surface-elevated: #2d3a35;
+    --accent-primary: #7cb398;
+    --accent-secondary: #a8d4c0;
+    --accent-tertiary: #5a8f74;
+    --accent-warm: #d4a574;
+    --text-primary: #e8ede9;
+    --text-secondary: #a3b3ab;
+    --text-muted: #6b7c74;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background-primary text-text-primary antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-elevated rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent-primary/50;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface-primary/80 backdrop-blur-lg border border-surface-secondary/50;
+  }
+
+  .glass-elevated {
+    @apply bg-surface-secondary/80 backdrop-blur-xl border border-surface-elevated/50;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-accent-primary text-background-primary font-medium rounded-lg
+           hover:bg-accent-secondary transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-surface-secondary text-text-primary font-medium rounded-lg
+           border border-surface-elevated
+           hover:bg-surface-elevated transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary;
+  }
+
+  .card {
+    @apply bg-surface-primary border border-surface-secondary rounded-xl p-6;
+  }
+
+  .card-hover {
+    @apply card hover:border-accent-primary/50 hover:bg-surface-secondary/50 
+           transition-all duration-300 cursor-pointer;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 bg-background-secondary border border-surface-secondary
+           rounded-lg text-text-primary placeholder-text-muted
+           focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary;
+  }
+
+  .link {
+    @apply text-accent-primary hover:text-accent-secondary transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-primary to-accent-warm;
+  }
+}

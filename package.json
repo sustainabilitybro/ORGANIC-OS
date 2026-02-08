@@ -1,0 +1,28 @@
+{
+  "name": "organic-os",
+  "version": "1.0.0",
+  "description": "Organic OS - The Operating System for Being Human",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces",
+    "db:generate": "npm run db:generate --workspace=packages/database",
+    "db:migrate": "npm run db:migrate --workspace=packages/database",
+    "db:seed": "npm run db:seed --workspace=packages/database"
+  },
+  "keywords": [
+    "humanos",
+    "personal-development",
+    "wellness",
+    "communication"
+  ],
+  "author": "Don Qui AI",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
