@@ -80,7 +80,7 @@ export default function WellnessPage() {
             <div className="grid gap-4">
               {filteredRemedies.map((remedy) => (
                 <div
-                  key={re remedy.id}
+                  key={remedy.id}
                   className={`bg-neutral-900 border rounded-xl p-5 cursor-pointer transition-all hover:border-neutral-700 ${
                     selectedRemedy === remedy.id ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-neutral-800'
                   }`}
