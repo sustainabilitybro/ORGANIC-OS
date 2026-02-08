@@ -52,6 +52,20 @@ export default function Home() {
       color: 'from-emerald-600 to-green-600',
     },
     {
+      name: 'Holistic Alchemy',
+      href: '/holistic-alchemy',
+      icon: '🧪',
+      description: 'Transform consciousness through alchemical practices',
+      color: 'from-purple-600 to-violet-700',
+    },
+    {
+      name: 'Atom Economy',
+      href: '/atom-economy',
+      icon: '⚛️',
+      description: 'Optimizing chemical processes for sustainability',
+      color: 'from-cyan-600 to-blue-700',
+    },
+    {
       name: 'Video',
       href: '/video',
       icon: '📹',

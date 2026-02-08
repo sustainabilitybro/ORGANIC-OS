@@ -13,6 +13,8 @@ const navItems = [
   { name: 'Wellness', href: '/dashboard/wellness', icon: '🌿' },
   { name: 'Recovery', href: '/dashboard/recovery', icon: '🔋' },
   { name: 'Communication', href: '/dashboard/communication', icon: '🎤' },
+  { name: 'Holistic Alchemy', href: '/holistic-alchemy', icon: '🧪' },
+  { name: 'Atom Economy', href: '/atom-economy', icon: '⚛️' },
 ]
 
 export default function DashboardLayout({

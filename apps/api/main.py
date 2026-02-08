@@ -14,6 +14,8 @@ from app.database.connection import init_db
 from app.api.routes import router
 from app.api.admin import router as admin_router
 from app.api.health_routes import router as health_router
+from app.api.holistic_alchemy import router as holistic_router
+from app.api.atom_economy import router as atom_economy_router
 
 # Configure logging
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
@@ -93,6 +95,8 @@ async def audit_log_middleware(request: Request, call_next):
 app.include_router(router, prefix="/api/v1", tags=["Core API"])
 app.include_router(admin_router, prefix="/api/v1/admin", tags=["Admin"])
 app.include_router(health_router, tags=["Health Features"])
+app.include_router(holistic_router, prefix="/api/v1/sustainability", tags=["Holistic Alchemy"])
+app.include_router(atom_economy_router, prefix="/api/v1/chemistry", tags=["Atom Economy"])
 
 
 @app.get("/")
