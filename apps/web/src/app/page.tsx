@@ -42,7 +42,21 @@ export default function Home() {
       href: '/communication',
       icon: '🎤',
       description: 'Public speaking & expression',
-      color: 'from-purple-500 to-violet-6 from-violet-500 to-purple-600',
+      color: 'from-purple-500 to-violet-600',
+    },
+    {
+      name: 'Sustainability',
+      href: '/sustainability',
+      icon: '🌱',
+      description: 'Carbon footprint & eco-living',
+      color: 'from-emerald-600 to-green-600',
+    },
+    {
+      name: 'Video',
+      href: '/video',
+      icon: '📹',
+      description: 'Practice & create on camera',
+      color: 'from-rose-500 to-pink-600',
     },
   ];
 
@@ -63,7 +77,7 @@ export default function Home() {
             </h1>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-8">
               The Operating System for Being Human. A unified platform for identity, senses, 
-              emotions, wellness, recovery, and expression.
+              emotions, wellness, recovery, sustainability, and expression.
             </p>
             <div className="flex justify-center gap-4">
               <Link
