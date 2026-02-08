@@ -11,3 +11,4 @@ The Operating System for Being Human.
 - Communication
 - Sustainability
 - Video
+# Vercel sync trigger
