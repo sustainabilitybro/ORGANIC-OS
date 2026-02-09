@@ -10,7 +10,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:check": "vitest run --coverage --check",
+    "test:accessibility": "vitest run --config vitest.coverage.config.ts",
+    "test:accessibility:check": "vitest run --config vitest.coverage.config.ts --check"
   },
   "dependencies": {
     "next": "14.1.0",
@@ -37,6 +40,10 @@
     "@vitest/coverage-v8": "^1.2.0",
     "@testing-library/react": "^14.1.0",
     "@testing-library/jest-dom": "^6.2.0",
-    "jsdom": "^24.0.0"
+    "@testing-library/user-event": "^14.5.0",
+    "jsdom": "^24.0.0",
+    "@axe-core/react": "^4.8.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "@vitejs/plugin-react": "^4.2.0"
   }
 }
