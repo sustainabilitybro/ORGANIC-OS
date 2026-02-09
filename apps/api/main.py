@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .routes import auth, wellness, progress, modules, ai, openclaw
+from .routes import auth, wellness, progress, modules, ai, openclaw, modules_data
 
 # Get allowed origins from environment (comma-separated)
 ALLOWED_ORIGINS = os.getenv(
@@ -57,6 +57,7 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(wellness.router, prefix="/api/v1/wellness", tags=["Wellness"])
 app.include_router(progress.router, prefix="/api/v1/progress", tags=["Progress"])
 app.include_router(modules.router, prefix="/api/v1/modules", tags=["Modules"])
+app.include_router(modules_data.router, prefix="/api/v1/modules", tags=["Module Data"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["AI"])
 app.include_router(openclaw.router, prefix="/api/v1/openclaw", tags=["OpenClaw"])
 
