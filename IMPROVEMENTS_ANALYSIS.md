@@ -296,3 +296,46 @@ apps/web/playwright.config.ts # Playwright config
 | Week 5 | Resilience | ✅ Complete | 3/3 |
 
 **Total Progress: 29/47 (62%)**
+
+---
+
+## Remaining Improvements (18)
+
+### Medium Priority (8 remaining)
+
+| # | Improvement | Description |
+|---|-------------|-------------|
+| 30 | **Redis Caching Optimization** | Fine-tune TTL, add cache warming |
+| 31 | **Additional API Integrations** | Add more free APIs for data enrichment |
+| 32 | **Circuit Breaker Dashboard** | Visual monitoring of breaker status |
+| 33 | **Query Optimization** | Index tuning, slow query logging |
+| 34 | **Batch Operations** | Bulk insert/update endpoints |
+| 35 | **WebSocket Support** | Real-time updates for live features |
+| 36 | **Rate Limit Tuning** | Per-endpoint fine-tuning based on usage |
+| 37 | **Health Check Endpoints** | Comprehensive system health |
+
+### Low Priority (10 remaining)
+
+| # | Improvement | Description |
+|---|-------------|-------------|
+| 38 | **Performance Tuning** | Bottleneck analysis and optimization |
+| 39 | **Documentation Improvements** | API docs, architecture diagrams |
+| 40 | **Additional Test Coverage** | Edge cases, integration tests |
+| 41 | **Error Message Improvements** | User-friendly error messages |
+| 42 | **Logging Enhancement** | Structured logging, log aggregation |
+| 43 | **Metrics Dashboard** | Visual performance metrics |
+| 44 | **A11y Audit Phase 2** | Color contrast, keyboard navigation |
+| 45 | **Code Splitting** | Lazy loading for routes |
+| 46 | **Bundle Analysis** | Optimize bundle size |
+| 47 | **CI/CD Improvements** | Faster builds, better caching |
+
+---
+
+## Week 6: Additional Improvements
+
+### Current Session Focus
+
+1. **Additional API Integrations** - Add more free APIs
+2. **Performance Tuning** - Optimize slow paths
+3. **Documentation Improvements** - API docs
+
