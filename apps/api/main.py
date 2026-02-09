@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .routes import auth, wellness, progress, modules, ai, openclaw, modules_data
+from .routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations
+from .middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware
 
 # Get allowed origins from environment (comma-separated)
 ALLOWED_ORIGINS = os.getenv(
@@ -34,6 +35,12 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+# Setup error handling
+setup_error_handlers(app)
+
+# Add error handling middleware
+app.add_middleware(ErrorHandlingMiddleware)
+
 # Production-ready CORS configuration
 app.add_middleware(
     CORSMiddleware,
@@ -60,6 +67,9 @@ app.include_router(modules.router, prefix="/api/v1/modules", tags=["Modules"])
 app.include_router(modules_data.router, prefix="/api/v1/modules", tags=["Module Data"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["AI"])
 app.include_router(openclaw.router, prefix="/api/v1/openclaw", tags=["OpenClaw"])
+app.include_router(integrations.router, prefix="/api/v1/integrations", tags=["Integrations"])
+app.include_router(performance.router, prefix="/api/v1/performance", tags=["Performance"])
+app.include_router(health_integrations.router, prefix="/api/v1/health", tags=["Health & Wellness"])
 
 
 @app.get("/", tags=["Health"])
