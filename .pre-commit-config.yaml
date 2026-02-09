@@ -1,0 +1,111 @@
+# Pre-commit hooks configuration
+# Run: pre-commit install
+
+repos:
+  # ============ General ============
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: detect-private-key
+      
+  # ============ Python Formatting ============
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.0
+    hooks:
+      - id: isort
+        args: ['--profile', 'black', '--lines-after-imports', '2']
+        
+  - repo: https://github.com/psf/black
+    rev: 24.1.0
+    hooks:
+      - id: black
+        args: ['--line-length', '100', '--target-version', 'py311']
+        
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: 
+          - '--max-line-length=100'
+          - '--extend-ignore=E203,W503'
+          - '--per-file-ignores=__init__.py:F401'
+          
+  # ============ Type Checking ============
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        args: ['--strict', '--ignore-missing-imports']
+        additional_dependencies:
+          - pydantic>=2.5.0
+          - fastapi>=0.109.0
+          
+  # ============ Security Scanning ============
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        args: ['-r', 'apps/api/', '-x', 'tests/']
+        
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: hardcoded-tokens
+        files: '\.(env|example)$'
+        
+  # ============ JavaScript/TypeScript ============
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.0.0
+    hooks:
+      - id: eslint
+        files: 'apps/web/src/**/*.{js,jsx,ts,tsx}'
+        args: ['--max-warnings=0']
+        
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: 'apps/web/src/**/*.{js,jsx,ts,tsx,json,css,md}'
+        args: ['--write']
+        
+  # ============ Docker ============
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        args: ['-t', 'warning']
+        
+  # ============ GitHub Actions ============
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        
+  # ============ Documentation ============
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--config', '.markdownlint.json']
+        files: '**/*.md'
+
+# ============ Settings ============
+default_language_version:
+  python: python3.11
+  
+fail_fast: false
+
+# Auto-install on clone
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+  
+# Minimum hook versions
+minimum_pre_commit_version: 3.0.0
