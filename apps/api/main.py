@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 # Add routes and middleware directories to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, websocket, batch
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, websocket, batch, rate_tuning
 
 # Import middleware
 from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
@@ -169,6 +169,32 @@ app.include_router(additional_integrations.router, prefix="/api/v1/additional", 
 app.include_router(resilience.router, prefix="/api/v1/resilience", tags=["Resilience"])
 app.include_router(websocket.router, prefix="/api/v1/ws", tags=["WebSocket"])
 app.include_router(batch.router, prefix="/api/v1/batch", tags=["Batch"])
+# Cache Optimization
+try:
+    from routes import cache
+    app.include_router(cache.router, prefix="/api/v1/cache", tags=["Cache"])
+except: pass
+
+# Resilience Dashboard
+try:
+    from routes import resilience
+    app.include_router(resilience.dashboard.router, prefix="/api/v1/resilience/dashboard", tags=["Resilience Dashboard"])
+except: pass
+
+# Rate Limit Tuning
+app.include_router(rate_tuning.router, prefix="/api/v1/rate-limits", tags=["Rate Limits"])
+
+# Error Messages
+try:
+    from middleware import error_messages
+    app.include_router(error_messages.router, prefix="/api/v1/errors", tags=["Error Messages"])
+except: pass
+
+# Metrics Dashboard
+try:
+    from performance import metrics_dashboard
+    app.include_router(metrics_dashboard.router, prefix="/api/v1/metrics", tags=["Metrics"])
+except: pass
 
 
 # ============ Health Endpoints ============
@@ -344,9 +370,5 @@ async def debug_config():
             "RateLimitMiddleware",
             "SecurityHeadersMiddleware",
             "AuditMiddleware",
-            "PerformanceMiddleware",
-            "CORSMiddleware"
         ]
     }
-EOF
-echo "✓ Updated main.py with all improvements"
