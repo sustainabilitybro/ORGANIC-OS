@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Card, Button, StatCard, ProgressBar, Badge } from '@/components/ui'
+import { Card, Button, StatCard, ProgressBar, Badge, SearchBar } from '@/components/ui'
 import { useAuth } from '@/hooks/useAuth'
 import { useProgress } from '@/hooks/useProgress'
 import { formatRelativeTime, cn } from '@/lib/utils'
@@ -155,9 +155,10 @@ export default function DashboardPage() {
         <h1 className="text-4xl font-display font-bold mb-2">
           Welcome back{userFirstName ? `, ${userFirstName}` : ''} 👋
         </h1>
-        <p className="text-text-secondary text-lg">
+        <p className="text-text-secondary text-lg mb-4">
           Your operating system is running at {progressStats.overallProgress}% efficiency. Ready to grow today?
         </p>
+        <SearchBar />
       </header>
 
       {/* Daily Prompt */}

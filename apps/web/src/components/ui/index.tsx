@@ -220,3 +220,15 @@ export function PromptCard({ prompt, category, onComplete }: PromptCardProps) {
     </Card>
   )
 }
+
+// Data Export
+export { default as DataExport } from '../data-export/DataExport'
+
+// Push Notifications
+export { default as PushNotifications } from '../ui/PushNotifications'
+
+// Search
+export { default as SearchBar } from '../ui/SearchBar'
+
+// Agent Chat
+export { default as AgentChat } from '../ui/AgentChat'

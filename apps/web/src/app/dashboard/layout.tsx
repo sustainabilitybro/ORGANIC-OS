@@ -15,6 +15,8 @@ const navItems = [
   { name: 'Communication', href: '/dashboard/communication', icon: '🎤' },
   { name: 'Holistic Alchemy', href: '/holistic-alchemy', icon: '🧪' },
   { name: 'Atom Economy', href: '/atom-economy', icon: '⚛️' },
+  { name: 'Analytics', href: '/analytics', icon: '📊' },
+  { name: 'Settings', href: '/settings', icon: '⚙️' },
 ]
 
 export default function DashboardLayout({
