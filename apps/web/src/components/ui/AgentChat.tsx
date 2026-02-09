@@ -1,71 +1,100 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Send, Bot, User, MessageCircle, X, Sparkles } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Send, MessageCircle, X, Sparkles } from 'lucide-react'
+
+// Type definitions
+type MessageRole = 'user' | 'assistant' | 'agent'
 
 interface Message {
   id: string
-  role: 'user' | 'assistant' | 'agent'
+  role: MessageRole
   content: string
   agent_id?: string
-  timestamp: Date
+  timestamp: string
 }
 
-const AGENTS = [
+interface Agent {
+  id: string
+  name: string
+  icon: string
+  color: string
+}
+
+const AGENTS: Agent[] = [
   { id: 'coach', name: 'Don Qui', icon: '🤖', color: 'text-purple-500' },
   { id: 'socratic', name: 'Socratic', icon: '🎭', color: 'text-blue-500' },
   { id: 'wellness', name: 'Wellness', icon: '🌿', color: 'text-green-500' },
   { id: 'identity', name: 'Identity', icon: '👤', color: 'text-pink-500' },
 ]
 
+const STORAGE_KEY = 'organic-os-agent-chat-history'
+
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+}
+
+function createWelcomeMessage(agent: Agent): Message {
+  return {
+    id: generateId(),
+    role: 'assistant',
+    content: `Hi! I'm ${agent.name}, your ${agent.id} coach. How can I help you today?`,
+    agent_id: agent.id,
+    timestamp: new Date().toISOString()
+  }
+}
+
 export default function AgentChat() {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedAgent, setSelectedAgent] = useState(AGENTS[0])
+  const [selectedAgent, setSelectedAgent] = useState<Agent>(AGENTS[0])
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  // Load chat history from localStorage
   useEffect(() => {
-    // Load chat history
-    const saved = localStorage.getItem('agentChatHistory')
-    if (saved) {
-      const history = JSON.parse(saved)
-      setMessages(history)
-    } else {
-      // Welcome message
-      setMessages([{
-        id: 'welcome',
-        role: 'assistant',
-        content: `Hi! I'm ${selectedAgent.name}, your ${selectedAgent.id} coach. How can I help you today?`,
-        agent_id: selectedAgent.id,
-        timestamp: new Date()
-      }])
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const history: Message[] = JSON.parse(saved)
+        setMessages(history)
+      } else {
+        setMessages([createWelcomeMessage(selectedAgent)])
+      }
+    } catch {
+      setMessages([createWelcomeMessage(selectedAgent)])
     }
-  }, [])
+  }, [selectedAgent.id])
 
+  // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const saveMessages = (msgs: Message[]) => {
-    setMessages(msgs)
-    localStorage.setItem('agentChatHistory', JSON.stringify(msgs))
-  }
+  // Save messages to localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
+      } catch {
+        console.warn('Failed to save chat history')
+      }
+    }
+  }, [messages])
 
-  const sendMessage = async () => {
+  const handleSend = useCallback(async () => {
     if (!input.trim() || loading) return
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: generateId(),
       role: 'user',
       content: input.trim(),
-      timestamp: new Date()
+      timestamp: new Date().toISOString()
     }
 
     setLoading(true)
-    const newMessages = [...messages, userMessage]
-    setMessages(newMessages)
+    setMessages((prev) => [...prev, userMessage])
     setInput('')
 
     try {
@@ -80,48 +109,54 @@ export default function AgentChat() {
         })
       })
 
+      if (!response.ok) {
+        throw new Error('Failed to get response')
+      }
+
       const data = await response.json()
       
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateId(),
         role: 'assistant',
-        content: data.response,
+        content: data.response || `I appreciate you sharing that with me. As your ${selectedAgent.name} coach, I'd encourage you to reflect on what this experience teaches you about yourself.`,
         agent_id: data.agent_id || selectedAgent.id,
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       }
 
-      saveMessages([...newMessages, assistantMessage])
+      setMessages((prev) => [...prev, assistantMessage])
     } catch (error) {
-      // Fallback response
+      // Fallback response on error
       const fallbackMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateId(),
         role: 'assistant',
         content: `I appreciate you sharing that with me. As your ${selectedAgent.name} coach, I'd encourage you to reflect on what this experience teaches you about yourself.`,
         agent_id: selectedAgent.id,
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       }
-      saveMessages([...newMessages, fallbackMessage])
+      setMessages((prev) => [...prev, fallbackMessage])
     }
 
     setLoading(false)
-  }
+  }, [input, loading, selectedAgent])
 
-  const switchAgent = (agent: typeof AGENTS[0]) => {
+  const handleSwitchAgent = useCallback((agent: Agent) => {
     setSelectedAgent(agent)
-    setMessages([{
-      id: Date.now().toString(),
-      role: 'assistant',
-      content: `Hi! I'm ${agent.name}, your ${agent.id} coach. How can I help you today?`,
-      agent_id: agent.id,
-      timestamp: new Date()
-    }])
-  }
+    setMessages([createWelcomeMessage(agent)])
+  }, [])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }, [handleSend])
 
   if (!isOpen) {
     return (
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg flex items-center justify-center z-50 hover:scale-110 transition-transform"
+        aria-label="Open AI Chat"
       >
         <MessageCircle className="w-6 h-6 text-white" />
       </button>
@@ -137,7 +172,11 @@ export default function AgentChat() {
             <Sparkles className="w-5 h-5" />
             <h3 className="font-semibold">AI Coach</h3>
           </div>
-          <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/20 rounded">
+          <button 
+            onClick={() => setIsOpen(false)}
+            className="p-1 hover:bg-white/20 rounded"
+            aria-label="Close chat"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -147,7 +186,7 @@ export default function AgentChat() {
           {AGENTS.map((agent) => (
             <button
               key={agent.id}
-              onClick={() => switchAgent(agent)}
+              onClick={() => handleSwitchAgent(agent)}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors ${
                 selectedAgent.id === agent.id 
                   ? 'bg-white/30' 
@@ -207,15 +246,17 @@ export default function AgentChat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            onKeyDown={handleKeyDown}
             placeholder={`Message ${selectedAgent.name}...`}
             className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+            aria-label="Chat message"
             disabled={loading}
           />
           <button
-            onClick={sendMessage}
+            onClick={handleSend}
             disabled={!input.trim() || loading}
             className="w-10 h-10 bg-purple-500 hover:bg-purple-600 disabled:bg-slate-300 rounded-full flex items-center justify-center transition-colors"
+            aria-label="Send message"
           >
             <Send className="w-5 h-5 text-white" />
           </button>

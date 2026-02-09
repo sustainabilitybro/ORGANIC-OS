@@ -1,35 +1,94 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Download, Upload, FileJson, Shield, CheckCircle, AlertCircle } from 'lucide-react'
 
+// Type definitions for export/import data
+interface UserData {
+  id: string
+  email?: string
+  full_name?: string
+  avatar_url?: string
+  created_at?: string
+}
+
+interface WellnessEntry {
+  id?: string
+  user_id?: string
+  date: string
+  sleep_hours?: number
+  water_intake_ml?: number
+  exercise_minutes?: number
+  meditation_minutes?: number
+  mood_score?: number
+  energy_level?: number
+  nutrition_notes?: string
+  created_at?: string
+}
+
+interface ModuleProgress {
+  id?: string
+  user_id?: string
+  module_name: string
+  progress_percentage?: number
+  completed_topics?: string[]
+  current_focus?: string
+  notes?: string
+  last_activity?: string
+}
+
+interface Conversation {
+  id?: string
+  user_id?: string
+  module_name: string
+  topic?: string
+  message_count?: number
+  created_at?: string
+}
+
+interface Message {
+  id?: string
+  conversation_id?: string
+  role: 'user' | 'assistant'
+  content: string
+  tokens_used?: number
+  created_at?: string
+}
+
 interface ExportData {
-  user: any
-  wellnessEntries: any[]
-  moduleProgress: any[]
-  conversations: any[]
-  messages: any[]
+  user: UserData
+  wellnessEntries: WellnessEntry[]
+  moduleProgress: ModuleProgress[]
+  conversations: Conversation[]
+  messages: Message[]
   exportedAt: string
+}
+
+interface Status {
+  type: 'success' | 'error' | null
+  message: string
 }
 
 export default function DataExport() {
   const [exporting, setExporting] = useState(false)
   const [importing, setImporting] = useState(false)
-  const [status, setStatus] = useState<{type: 'success' | 'error' | null, message: string}>({type: null, message: ''})
+  const [status, setStatus] = useState<Status>({ type: null, message: '' })
 
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     setExporting(true)
-    setStatus({type: null, message: 'Preparing data...'})
+    setStatus({ type: null, message: 'Preparing data...' })
     
     try {
       // Fetch all user data
       const { data: { user } } = await supabase.auth.getUser()
+      
       if (!user) {
-        setStatus({type: 'error', message: 'Not authenticated'})
+        setStatus({ type: 'error', message: 'Not authenticated' })
         setExporting(false)
         return
       }
 
+      // Fetch data in parallel
       const [wellnessRes, progressRes, conversationsRes] = await Promise.all([
         supabase.from('wellness_entries').select('*').eq('user_id', user.id),
         supabase.from('module_progress').select('*').eq('user_id', user.id),
@@ -47,11 +106,12 @@ export default function DataExport() {
         wellnessEntries: wellnessRes.data || [],
         moduleProgress: progressRes.data || [],
         conversations: conversationsRes.data || [],
+        messages: [],
         exportedAt: new Date().toISOString()
       }
 
-      // Download as JSON
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'})
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -59,51 +119,66 @@ export default function DataExport() {
       a.click()
       URL.revokeObjectURL(url)
 
-      setStatus({type: 'success', message: `Exported ${exportData.wellnessEntries.length} wellness entries, ${exportData.moduleProgress.length} module progress records`})
+      setStatus({ 
+        type: 'success', 
+        message: `Exported ${exportData.wellnessEntries.length} wellness entries, ${exportData.moduleProgress.length} module progress records` 
+      })
     } catch (error) {
-      setStatus({type: 'error', message: 'Export failed: ' + (error as Error).message})
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      setStatus({ type: 'error', message: `Export failed: ${errorMessage}` })
     }
     
     setExporting(false)
-  }
+  }, [])
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     setImporting(true)
-    setStatus({type: null, message: 'Reading file...'})
+    setStatus({ type: null, message: 'Reading file...' })
 
     try {
       const text = await file.text()
       const data: ExportData = JSON.parse(text)
 
       const { data: { user } } = await supabase.auth.getUser()
+      
       if (!user) {
-        setStatus({type: 'error', message: 'Not authenticated'})
+        setStatus({ type: 'error', message: 'Not authenticated' })
         setImporting(false)
         return
       }
 
       // Import wellness entries
       if (data.wellnessEntries?.length > 0) {
-        const entries = data.wellnessEntries.map(e => ({...e, user_id: user.id}))
+        const entries = data.wellnessEntries.map((entry: WellnessEntry) => ({
+          ...entry,
+          user_id: user.id
+        }))
         await supabase.from('wellness_entries').upsert(entries)
       }
 
       // Import module progress
       if (data.moduleProgress?.length > 0) {
-        const progress = data.moduleProgress.map(p => ({...p, user_id: user.id}))
+        const progress = data.moduleProgress.map((progressItem: ModuleProgress) => ({
+          ...progressItem,
+          user_id: user.id
+        }))
         await supabase.from('module_progress').upsert(progress)
       }
 
-      setStatus({type: 'success', message: `Imported ${data.wellnessEntries?.length || 0} wellness entries, ${data.moduleProgress?.length || 0} module progress records`})
+      setStatus({ 
+        type: 'success', 
+        message: `Imported ${data.wellnessEntries?.length || 0} wellness entries, ${data.moduleProgress?.length || 0} module progress records` 
+      })
     } catch (error) {
-      setStatus({type: 'error', message: 'Import failed: ' + (error as Error).message})
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      setStatus({ type: 'error', message: `Import failed: ${errorMessage}` })
     }
 
     setImporting(false)
-  }
+  }, [])
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
@@ -126,6 +201,7 @@ export default function DataExport() {
             onClick={handleExport}
             disabled={exporting}
             className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+            aria-label="Export all data"
           >
             {exporting ? 'Exporting...' : 'Export All Data'}
           </button>
@@ -147,6 +223,7 @@ export default function DataExport() {
               accept=".json"
               onChange={handleImport}
               className="hidden"
+              aria-label="Import data file"
             />
           </label>
         </div>
@@ -166,14 +243,17 @@ export default function DataExport() {
 
       {/* Status Message */}
       {status.message && (
-        <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
-          status.type === 'success' ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 
-          status.type === 'error' ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400' : 
-          'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-        }`}>
+        <div 
+          className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
+            status.type === 'success' ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 
+            status.type === 'error' ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400' : 
+            'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+          }`}
+          role="alert"
+        >
           {status.type === 'success' ? <CheckCircle className="w-5 h-5" /> : 
            status.type === 'error' ? <AlertCircle className="w-5 h-5" /> : null}
-          {status.message}
+          <span>{status.message}</span>
         </div>
       )}
     </div>
