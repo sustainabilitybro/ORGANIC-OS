@@ -48,3 +48,30 @@ slowapi>=0.1.9
 
 # Optional: OpenAPI Documentation
 recommonmark>=0.7.1
+
+# ============ Performance & Testing ============
+
+# Database & ORM
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
+# Caching
+redis>=5.0.0
+aioredis>=2.0.0
+
+# Load Testing
+locust>=2.20.0
+pytest-benchmark>=4.0.0
+
+# E2E Testing
+playwright>=1.40.0
+pytest-playwright>=0.4.0
+
+# Performance Monitoring
+psutil>=5.9.0
+py-spy>=0.3.0
+pyflame>=1.5.0
+
+# Profiling
+memory-profiler>=0.61.0
+line-profiler>=4.0.0

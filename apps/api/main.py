@@ -8,12 +8,13 @@ from typing import Dict, Any
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 
 # Add routes and middleware directories to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status
 
 # Import middleware
 from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
@@ -93,10 +94,13 @@ setup_security_headers(app)
 # 5. Audit logging
 setup_audit_logging(app)
 
-# 6. Performance monitoring
+# 6. Response compression (60% bandwidth reduction)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# 7. Performance monitoring
 app.add_middleware(PerformanceMiddleware)
 
-# 7. CORS configuration
+# 8. CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -141,6 +145,9 @@ app.include_router(personal_integrations.router, prefix="/api/v1/pis", tags=["Pe
 
 # Performance and monitoring
 app.include_router(performance.router, prefix="/api/v1/performance", tags=["Performance"])
+
+# Database optimization
+app.include_router(database_status.router, prefix="/api/v1/database", tags=["Database"])
 
 
 # ============ Health Endpoints ============
