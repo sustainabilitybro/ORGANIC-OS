@@ -1,13 +1,21 @@
 # Organic OS API
-# FastAPI backend for Organic OS
+# FastAPI backend for Organic OS - Refactored with all integrations
 
 import os
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import sys
 from contextlib import asynccontextmanager
+from typing import Dict, Any
 
-from .routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations
-from .middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+# Add routes directory to path
+sys.path.insert(0, os.path.dirname(__file__))
+
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations
+from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
+from middleware.performance_middleware import PerformanceMiddleware, get_metrics, get_health_status
 
 # Get allowed origins from environment (comma-separated)
 ALLOWED_ORIGINS = os.getenv(
@@ -18,30 +26,38 @@ ALLOWED_ORIGINS = os.getenv(
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: initialize services, database connections, etc.
-    # In production, establish database pool here
+    """Application lifespan handler"""
+    # Startup
+    print("🚀 Organic OS API starting up...")
+    print(f"📍 Environment: {os.getenv('ENVIRONMENT', 'development')}")
+    print(f"🔗 API Docs: /docs")
     yield
-    # Shutdown: cleanup connections, close pools
-    # Close any open connections here
+    # Shutdown
+    print("👋 Organic OS API shutting down...")
 
 
+# Create FastAPI application with optimized settings
 app = FastAPI(
     title="Organic OS API",
-    description="The Operating System for Being Human - API",
-    version="1.0.0",
+    description="The Operating System for Being Human - API\n\n## Features\n- **Authentication** - User management with Supabase\n- **Wellness Tracking** - Sleep, nutrition, exercise, mindfulness\n- **Progress Monitoring** - Track your personal development\n- **AI Coaching** - Multi-agent system via OpenClaw\n- **Integrations** - Free APIs for health, facts, quotes\n- **Personal Integrations** - Habits, goals, calendar, preferences\n- **Performance Monitoring** - Metrics and health checks",
+    version="2.0.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
+    debug=os.getenv('ENVIRONMENT') == 'development'
 )
 
-# Setup error handling
-setup_error_handlers(app)
+# ============ Middleware ============
 
-# Add error handling middleware
+# Error handling
+setup_error_handlers(app)
 app.add_middleware(ErrorHandlingMiddleware)
 
-# Production-ready CORS configuration
+# Performance monitoring
+app.add_middleware(PerformanceMiddleware)
+
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -56,50 +72,166 @@ app.add_middleware(
         "X-Requested-With",
     ],
     expose_headers=["Content-Length", "X-Request-ID"],
-    max_age=86400,  # 24 hours cache for preflight
+    max_age=86400,
 )
 
-# Include routers with consistent prefix
+# ============ Routes ============
+
+# Core authentication
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+
+# Wellness and tracking
 app.include_router(wellness.router, prefix="/api/v1/wellness", tags=["Wellness"])
 app.include_router(progress.router, prefix="/api/v1/progress", tags=["Progress"])
+
+# Content modules
 app.include_router(modules.router, prefix="/api/v1/modules", tags=["Modules"])
 app.include_router(modules_data.router, prefix="/api/v1/modules", tags=["Module Data"])
+
+# AI features
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["AI"])
 app.include_router(openclaw.router, prefix="/api/v1/openclaw", tags=["OpenClaw"])
-app.include_router(integrations.router, prefix="/api/v1/integrations", tags=["Integrations"])
-app.include_router(performance.router, prefix="/api/v1/performance", tags=["Performance"])
-app.include_router(health_integrations.router, prefix="/api/v1/health", tags=["Health & Wellness"])
 
+# Integrations
+app.include_router(integrations.router, prefix="/api/v1/integrations", tags=["Integrations"])
+app.include_router(health_integrations.router, prefix="/api/v1/health", tags=["Health"])
+
+# Personal integrations (habits, goals, calendar, preferences)
+app.include_router(personal_integrations.router, prefix="/api/v1/pis", tags=["Personal Integrations"])
+
+# Performance and monitoring
+app.include_router(performance.router, prefix="/api/v1/performance", tags=["Performance"])
+
+
+# ============ Health Endpoints ============
 
 @app.get("/", tags=["Health"])
 async def root():
-    """Root endpoint - API status."""
+    """Root endpoint - API status"""
     return {
         "status": "healthy",
         "message": "Organic OS API is running",
-        "version": "1.0.0"
+        "version": "2.0.0",
+        "documentation": "/docs",
+        "environment": os.getenv("ENVIRONMENT", "development")
     }
 
 
 @app.get("/api/v1/health", tags=["Health"])
 async def health_check():
-    """Health check endpoint for load balancers."""
+    """Health check endpoint for load balancers"""
     return {
         "status": "healthy",
-        "version": "1.0.0",
-        "environment": os.getenv("ENVIRONMENT", "development")
+        "version": "2.0.0",
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "timestamp": str(__import__('datetime').datetime.utcnow().isoformat())
     }
 
 
 @app.get("/api/v1/ready", tags=["Health"])
 async def readiness_check():
-    """Readiness check - verifies all dependencies are available."""
-    # In production, check database, cache, and external services
+    """Readiness check - verifies all dependencies are available"""
+    health = get_health_status()
+    
     return {
-        "ready": True,
+        "ready": health["healthy"],
         "checks": {
-            "database": "ok",
+            "database": "checking" if os.getenv("SUPABASE_URL") else "not configured",
             "cache": "ok",
-        }
+            "external_services": "ok"
+        },
+        "issues": health.get("issues", [])
     }
+
+
+# ============ Metrics Endpoints ============
+
+@app.get("/api/v1/metrics", tags=["Performance"])
+async def get_all_metrics():
+    """Get comprehensive metrics"""
+    return get_metrics()
+
+
+# ============ Error Handlers ============
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError):
+    """Handle validation errors"""
+    return JSONResponse(
+        status_code=422,
+        content={
+            "success": False,
+            "error": {
+                "code": "VALIDATION_ERROR",
+                "message": exc.message,
+                "details": exc.details
+            }
+        }
+    )
+
+
+@app.exception_handler(NotFoundError)
+async def not_found_exception_handler(request: Request, exc: NotFoundError):
+    """Handle not found errors"""
+    return JSONResponse(
+        status_code=404,
+        content={
+            "success": False,
+            "error": {
+                "code": "NOT_FOUND",
+                "message": exc.message
+            }
+        }
+    )
+
+
+@app.exception_handler(OrganicOSException)
+async def organic_os_exception_handler(request: Request, exc: OrganicOSException):
+    """Handle Organic OS exceptions"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "error": {
+                "code": exc.code,
+                "message": exc.message,
+                "details": exc.details
+            }
+        }
+    )
+
+
+# ============ Development Endpoints ============
+
+@app.get("/api/v1/debug/routes", tags=["Debug"])
+async def list_routes():
+    """List all registered routes (development only)"""
+    if os.getenv("ENVIRONMENT") != "development":
+        return {"error": "Only available in development mode"}
+    
+    routes = []
+    for route in app.routes:
+        methods = getattr(route, "methods", None)
+        if methods:
+            routes.append({
+                "path": getattr(route, "path", ""),
+                "methods": list(methods),
+                "name": getattr(route, "name", "")
+            })
+    return {"routes": routes}
+
+
+@app.get("/api/v1/debug/config", tags=["Debug"])
+async def debug_config():
+    """Debug configuration (sanitized)"""
+    if os.getenv("ENVIRONMENT") != "development":
+        return {"error": "Only available in development mode"}
+    
+    return {
+        "environment": os.getenv("ENVIRONMENT"),
+        "supabase_url_set": bool(os.getenv("SUPABASE_URL")),
+        "allowed_origins": ALLOWED_ORIGINS,
+        "python_version": sys.version
+    }
+EOF
+echo "✓ Created refactored main.py"
