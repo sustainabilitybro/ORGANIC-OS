@@ -1,6 +1,9 @@
-import Link from 'next/link';
+import Link from 'next/link'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Home() {
+  const { user, signOut } = useAuth()
+
   const modules = [
     {
       name: 'Identity',
@@ -72,10 +75,28 @@ export default function Home() {
       description: 'Practice & create on camera',
       color: 'from-rose-500 to-pink-600',
     },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-neutral-950">
+      {/* User Banner */}
+      {user && (
+        <div className="bg-emerald-900/20 border-b border-emerald-500/20">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-emerald-400">✓</span>
+              <span className="text-emerald-300">Signed in as {user.email}</span>
+            </div>
+            <button
+              onClick={() => signOut()}
+              className="text-sm text-neutral-400 hover:text-white transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-neutral-950 to-neutral-950" />
@@ -95,10 +116,10 @@ export default function Home() {
             </p>
             <div className="flex justify-center gap-4">
               <Link
-                href="/dashboard"
+                href={user ? '/dashboard' : '/auth'}
                 className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-lg font-medium transition-colors"
               >
-                Enter Platform →
+                {user ? 'Go to Dashboard →' : 'Get Started →'}
               </Link>
               <a
                 href="#modules"
@@ -205,5 +226,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
