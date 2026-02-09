@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, Button, Input, Textarea, Spinner } from '@organic-os/ui'
+import { Card, Button, Input, Textarea, Spinner } from '@/components/design-system'
 
 const identityTopics = [
   { id: 'values', name: 'Core Values', icon: '🎯', description: 'What matters most to you?' },

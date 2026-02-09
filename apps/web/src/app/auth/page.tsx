@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { Card, Button, Input } from '@organic-os/ui'
+import { Card, Button, Input } from '@/components/design-system'
 import Link from 'next/link'
 
 export default function AuthPage() {

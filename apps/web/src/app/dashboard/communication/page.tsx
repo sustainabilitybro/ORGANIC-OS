@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, Button, Spinner } from '@organic-os/ui'
+import { Card, Button, Spinner } from '@/components/design-system'
 
 const communicationTopics = [
   { id: 'frameworks', name: 'Frameworks', icon: '🏗️', description: 'Proven speaking structures' },

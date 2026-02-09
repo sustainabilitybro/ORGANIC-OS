@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, Button, Spinner } from '@organic-os/ui'
+import { Card, Button, Spinner } from '@/components/design-system'
 
 const recoveryTopics = [
   { id: 'assess', name: 'Burnout Assessment', icon: '🔥', description: 'Measure your burnout levels' },

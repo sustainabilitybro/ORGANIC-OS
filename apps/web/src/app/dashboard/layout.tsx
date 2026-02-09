@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Button } from '@organic-os/ui'
+import { Button } from '@/components/design-system'
 
 const navItems = [
   { name: 'Overview', href: '/dashboard', icon: '🏠' },

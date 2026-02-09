@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, Button, Spinner } from '@organic-os/ui'
+import { Card, Button, Spinner } from '@/components/design-system'
 
 const sensoryTopics = [
   { id: 'visual', name: 'Visual', icon: '👁️', description: 'Sight and perception' },
