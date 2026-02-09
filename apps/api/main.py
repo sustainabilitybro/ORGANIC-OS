@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 # Add routes and middleware directories to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning
 
 # Import middleware
 from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
@@ -118,6 +118,17 @@ app.add_middleware(
     max_age=86400,
 )
 
+# ============ Cache Setup ============
+
+# Import and setup caching
+try:
+    from cache.redis_cache import setup_cache, cache_manager
+    setup_cache(app)
+    CACHE_AVAILABLE = True
+except ImportError:
+    CACHE_AVAILABLE = False
+    cache_manager = None
+
 # ============ Routes ============
 
 # Core authentication
@@ -148,6 +159,12 @@ app.include_router(performance.router, prefix="/api/v1/performance", tags=["Perf
 
 # Database optimization
 app.include_router(database_status.router, prefix="/api/v1/database", tags=["Database"])
+
+# API versioning
+app.include_router(api_versioning.router, prefix="/api/v1/versioning", tags=["API Versioning"])
+
+# Content versioning
+app.include_router(content_versioning.router, prefix="/api/v1/content", tags=["Content Versioning"])
 
 
 # ============ Health Endpoints ============
