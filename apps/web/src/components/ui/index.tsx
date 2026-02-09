@@ -232,3 +232,6 @@ export { default as SearchBar } from '../ui/SearchBar'
 
 // Agent Chat
 export { default as AgentChat } from '../ui/AgentChat'
+
+// Quick Check-In
+export { default as QuickCheckIn } from '../ui/QuickCheckIn'
