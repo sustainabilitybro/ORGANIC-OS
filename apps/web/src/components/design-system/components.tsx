@@ -429,15 +429,3 @@ Switch.displayName = 'Switch';
 
 // ============ Export ============
 
-export {
-  cn,
-  Button,
-  Card,
-  Input,
-  Badge,
-  Progress,
-  Avatar,
-  Select,
-  Textarea,
-  Switch,
-};

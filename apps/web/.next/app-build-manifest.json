@@ -1,0 +1,212 @@
+{
+  "pages": {
+    "/_not-found": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/_not-found-359a5e5c335b26e7.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/css/4c772c5bdb738275.css",
+      "static/chunks/app/layout-04028d445ba517e6.js"
+    ],
+    "/analytics/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/759-a87964044c344a75.js",
+      "static/chunks/app/analytics/page-2f67334df283ec76.js"
+    ],
+    "/auth/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/auth/page-e71de6fa51364f8f.js"
+    ],
+    "/atom-economy/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/atom-economy/page-c02cbda8e7ef4b74.js"
+    ],
+    "/communication/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/communication/page-fa90a4875858db5f.js"
+    ],
+    "/emotional/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/emotional/page-70fd6365b6ac83be.js"
+    ],
+    "/identity/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/identity/page-bdc5db3e17a47c07.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/250-96ac199ac1e6549a.js",
+      "static/chunks/app/page-000173d4b5ebff30.js"
+    ],
+    "/holistic-alchemy/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/holistic-alchemy/page-7af1b29b02ded5c1.js"
+    ],
+    "/recovery/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/recovery/page-ae53785dcc492a6d.js"
+    ],
+    "/progress/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/progress/page-c38db5134fc95106.js"
+    ],
+    "/sustainability/atom-economy/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/sustainability/atom-economy/page-8803b415f6aab29f.js"
+    ],
+    "/settings/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/759-a87964044c344a75.js",
+      "static/chunks/app/settings/page-5ecbd4685eea3269.js"
+    ],
+    "/sustainability/holistic-alchemy/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/sustainability/holistic-alchemy/page-83914e1138cdd6ed.js"
+    ],
+    "/sensory/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/sensory/page-fdec4c5212dda0d5.js"
+    ],
+    "/wellness/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/7-790bd39bb3890024.js",
+      "static/chunks/app/wellness/page-3e2383fbd36341fa.js"
+    ],
+    "/video/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/video/page-53efc8ec2972d783.js"
+    ],
+    "/sustainability/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/app/sustainability/page-bc665043fd5b5fa5.js"
+    ],
+    "/dashboard/layout": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/250-96ac199ac1e6549a.js",
+      "static/chunks/app/dashboard/layout-2ed8b4bb4367fdc2.js"
+    ],
+    "/dashboard/identity/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/dashboard/identity/page-2f6cab660c0c0e7b.js"
+    ],
+    "/dashboard/recovery/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/dashboard/recovery/page-4007664c8e914c88.js"
+    ],
+    "/dashboard/wellness/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/250-96ac199ac1e6549a.js",
+      "static/chunks/app/dashboard/wellness/page-8d22609125c17ab8.js"
+    ],
+    "/dashboard/sensory/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/dashboard/sensory/page-f8b9bb1708b0e672.js"
+    ],
+    "/dashboard/communication/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/dashboard/communication/page-0936c113cfe3d702.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/759-a87964044c344a75.js",
+      "static/chunks/app/dashboard/page-137a4cca040be566.js"
+    ],
+    "/dashboard/emotional/page": [
+      "static/chunks/webpack-81308089fbbe81b6.js",
+      "static/chunks/fd9d1056-588512ac8f833320.js",
+      "static/chunks/69-b3f8dc20f486d403.js",
+      "static/chunks/main-app-2ef02a4e64b75eb2.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/app/dashboard/emotional/page-205bd7c29f63d92d.js"
+    ]
+  }
+}

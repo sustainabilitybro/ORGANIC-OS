@@ -58,16 +58,6 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
-    
-    {
-      name: 'Accessibility',
-      use: {
-        ...devices['Desktop Chrome'],
-        accessibilityInsights: {
-          loginEnabled: false,
-        },
-      },
-    },
   ],
   
   webServer: {
@@ -76,16 +66,4 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
-  
-  expect: {
-    timeout: 5000,
-    
-    toHaveScreenshot: {
-      maxDiffPixels: 100,
-    },
-  },
-  
-  snapshotDir: './tests/e2e/snapshots',
-  
-  snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{arg}{ext}',
 });
