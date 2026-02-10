@@ -21,9 +21,9 @@
       "@/*": ["./src/*"],
       "@organic-os/ui/*": ["../../packages/ui/src/*"],
       "@organic-os/database/*": ["../../packages/database/src/*"],
-      "@organic-os/ai-core/*": ["../../packages/ai-core/*"]
+      "@organic-os/ai-core/*": ["../../packages/ai-core/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/data/modules/*.ts"]
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 // Dark Mode Theme Hook with System Preference Detection
 
 import { useState, useEffect, useCallback, createContext, useContext, useMemo } from 'react';
@@ -165,9 +166,7 @@ export function ThemeProvider({
   }), [theme, resolvedTheme, setTheme, toggleTheme, systemPreference, isDark]);
   
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    React.createElement(ThemeContext.Provider, { value }, children)
   );
 }
 

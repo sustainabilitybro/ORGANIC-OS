@@ -3,5 +3,5 @@
 
 export { SkipLink } from './SkipLink';
 export { AccessibleInput } from './AccessibleInput';
-export { AccessibleModal } from './AccessibleModal';
+export { default as AccessibleModal } from './AccessibleModal';
 export { LiveRegion, StatusAnnouncer } from './LiveRegion';

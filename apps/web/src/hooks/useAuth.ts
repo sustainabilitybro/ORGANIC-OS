@@ -14,6 +14,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error: { message: string } | null }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: { message: string } | null }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: { message: string } | null }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,6 +26,10 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: async () => {},
   logout: async () => {},
+  signIn: async () => ({ error: null }),
+  signUp: async () => ({ error: null }),
+  signOut: async () => {},
+  resetPassword: async () => ({ error: null }),
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -36,10 +44,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     setUser(null);
   };
+  const signIn = async (email: string, password: string) => {
+    return { error: null };
+  };
+  const signUp = async (email: string, password: string, fullName: string) => {
+    return { error: null };
+  };
+  const signOut = async () => {
+    setUser(null);
+  };
+  const resetPassword = async (email: string) => {
+    return { error: null };
+  };
 
   return React.createElement(
     AuthContext.Provider,
-    { value: { user, loading, isAuthenticated: !!user, login, logout } },
+    { value: { user, loading, isAuthenticated: !!user, login, logout, signIn, signUp, signOut, resetPassword } },
     children
   );
 }

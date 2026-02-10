@@ -13,6 +13,7 @@ interface CalendarEvent {
   end: Date;
   description?: string;
   location?: string;
+  type?: string;
   reminders?: ReminderConfig[];
 }
 
