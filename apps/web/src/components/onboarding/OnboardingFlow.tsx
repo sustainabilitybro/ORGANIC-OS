@@ -2,7 +2,7 @@
 // Multi-step onboarding with progress tracking
 
 import React, { useState, useCallback } from 'react';
-import { Card, Button, Input, Select, Progress, Badge } from '../design-system';
+import { Card, Button, Input, Select, Progress, Badge, Switch } from '../design-system';
 
 // ============ Types ============
 
