@@ -1,82 +1,131 @@
-'use client';
+'use client'
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react'
+import { query } from '@/lib/db'
 
-// Types matching what analytics expects
 interface WellnessEntry {
-  id: string;
-  date: string;
-  mood?: number;
-  mood_score?: number;
-  energy?: number;
-  sleep?: number;
-  sleep_hours?: number;
+  id: string
+  date: string
+  mood_score?: number
+  energy_level?: number
+  sleep_hours?: number
 }
 
 interface ModuleProgress {
-  id: string;
-  module_name: string;
-  progress_percentage: number;
-  last_activity: string;
-  completed_topics: string[];
+  id: string
+  module_name: string
+  progress_percentage: number
+  last_activity: string
+  completed_topics: string[]
 }
 
 interface ProgressData {
-  streak: number;
-  weeklyProgress: number;
-  goalsCompleted: number;
-  meditationMinutes: number;
-  level: number;
-  xp: number;
+  streak: number
+  weeklyProgress: number
+  goalsCompleted: number
+  meditationMinutes: number
+  level: number
+  xp: number
 }
 
 export function useProgress(userId: string | null = null) {
-  const [loading] = useState(false);
-  
-  const wellnessEntries: WellnessEntry[] = useMemo(() => {
-    // Return mock data for demo
-    return [
-      { id: '1', date: '2024-01-15', mood: 7, energy: 6, sleep: 7.5 },
-      { id: '2', date: '2024-01-16', mood: 8, energy: 7, sleep: 8 },
-    ];
-  }, []);
-  
-  const moduleProgress: Record<string, ModuleProgress> = useMemo(() => {
-    return {
-      identity: {
-        id: '1',
-        module_name: 'Identity',
-        progress_percentage: 75,
-        last_activity: '2024-01-15',
-        completed_topics: ['values', 'ikigai'],
-      },
-      wellness: {
-        id: '2',
-        module_name: 'Wellness',
-        progress_percentage: 100,
-        last_activity: '-10',
-        completed_topics: ['sleep', '2024-01nutrition', 'exercise'],
-      },
-    };
-  }, []);
-  
-  const progress: ProgressData = {
-    streak: 5,
-    weeklyProgress: 45,
-    goalsCompleted: 12,
-    meditationMinutes: 180,
-    level: 3,
-    xp: 1250,
-  };
-  const setProgress = () => {};
-  
+  const [loading, setLoading] = useState(true)
+  const [wellnessEntries, setWellnessEntries] = useState<WellnessEntry[]>([])
+  const [moduleProgress, setModuleProgress] = useState<Record<string, ModuleProgress>>({})
+  const [progress, setProgressData] = useState<ProgressData>({
+    streak: 0,
+    weeklyProgress: 0,
+    goalsCompleted: 0,
+    meditationMinutes: 0,
+    level: 1,
+    xp: 0,
+  })
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!userId) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        // Fetch wellness entries
+        const wellnessRes = await fetch(`/api/mood_entries?module=mood_entries`)
+        const wellnessData = await wellnessRes.json()
+        if (wellnessData.data) {
+          setWellnessEntries(wellnessData.data)
+        }
+
+        // Fetch user progress
+        const progressRes = await fetch(`/api/user_progress?module=user_progress`)
+        const progressData = await progressRes.json()
+        if (progressData.data && progressData.data.length > 0) {
+          const userProgress = progressData.data[0]
+          setProgressData({
+            streak: userProgress.streak_days || 0,
+            weeklyProgress: Math.floor((userProgress.xp_points || 0) / 10) % 100,
+            goalsCompleted: 0,
+            meditationMinutes: 0,
+            level: userProgress.current_level || 1,
+            xp: userProgress.xp_points || 0,
+          })
+
+          // Build module progress from JSON
+          const modules = ['identity', 'sensory', 'emotional', 'wellness', 'recovery', 'communication', 'sustainability']
+          const progressMap: Record<string, ModuleProgress> = {}
+          modules.forEach((module, i) => {
+            progressMap[module] = {
+              id: userProgress.id,
+              module_name: module,
+              progress_percentage: userProgress.achievements ? 
+                (userProgress.achievements[`${module}_progress`] || 0) : 0,
+              last_activity: userProgress.last_active,
+              completed_topics: userProgress.achievements ?
+                (userProgress.achievements[`${module}_completed`] || []) : [],
+            }
+          })
+          setModuleProgress(progressMap)
+        }
+      } catch (error) {
+        console.error('Error fetching progress:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProgress()
+  }, [userId])
+
+  const trackActivity = async (activity: string, data?: any) => {
+    if (!userId) return
+
+    try {
+      await fetch('/api/mood_entries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          module: 'mood_entries',
+          data: {
+            user_id: userId,
+            mood_score: data?.mood || null,
+            journal_entry: activity,
+          },
+        }),
+      })
+    } catch (error) {
+      console.error('Error tracking activity:', error)
+    }
+  }
+
+  const getStreak = () => progress.streak
+
   return {
     progress,
-    setProgress,
+    setProgress: setProgressData,
     loading,
     wellnessEntries,
     moduleProgress,
-    trackActivity: () => {},
-    getStreak: () => 5,
-  };
+    trackActivity,
+    getStreak,
+  }
 }
