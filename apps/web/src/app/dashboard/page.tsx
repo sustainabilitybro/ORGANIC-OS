@@ -8,15 +8,15 @@ import { useProgress } from '@/hooks/useProgress';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function DashboardPage() {
-  const { progress, loading: progressLoading } = useProgress();
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
+  const { progress, loading: progressLoading } = useProgress(user?.id || null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted || authLoading || progressLoading) {
+  if (!mounted || progressLoading) {
     return <DashboardSkeleton />;
   }
 
@@ -39,25 +39,21 @@ export default function DashboardPage() {
             title="Current Streak"
             value={`${progress.streak || 0} days`}
             icon="🔥"
-            color="orange"
           />
           <StatCard
             title="Weekly Progress"
             value={`${progress.weeklyProgress || 0}%`}
             icon="📈"
-            color="blue"
           />
           <StatCard
             title="Goals Completed"
             value={progress.goalsCompleted || 0}
             icon="✅"
-            color="green"
           />
           <StatCard
             title="Time Meditated"
             value={`${progress.meditationMinutes || 0}m`}
             icon="🧘"
-            color="purple"
           />
         </div>
 
@@ -86,11 +82,11 @@ export default function DashboardPage() {
             <p className="text-neutral-600 dark:text-neutral-400 mb-4">
               Your recommended activity for today
             </p>
-            <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
-              <p className="font-medium text-primary-800 dark:text-primary-200">
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4">
+              <p className="font-medium text-emerald-800 dark:text-emerald-200">
                 🌅 Morning Meditation
               </p>
-              <p className="text-sm text-primary-600 dark:text-primary-300 mt-1">
+              <p className="text-sm text-emerald-600 dark:text-emerald-300 mt-1">
                 Start your day with 10 minutes of mindfulness
               </p>
             </div>
@@ -104,7 +100,7 @@ export default function DashboardPage() {
             <ActivityItem
               icon="📝"
               title="Mood Logged"
-              description="You logged your mood as 'Good'"
+              description="You logged your mood as Good"
               time="2 hours ago"
             />
             <ActivityItem
@@ -150,10 +146,9 @@ interface StatCardProps {
   title: string;
   value: string | number;
   icon: string;
-  color: string;
 }
 
-function StatCard({ title, value, icon, color }: StatCardProps) {
+function StatCard({ title, value, icon }: StatCardProps) {
   return (
     <Card className="p-6">
       <div className="flex items-start justify-between">

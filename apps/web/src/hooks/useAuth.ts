@@ -1,24 +1,23 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 
 interface User {
-  id: string
-  email?: string
-  name?: string
+  id: string;
+  email?: string;
+  name?: string;
 }
 
 interface AuthContextType {
-  user: User | null
-  loading: boolean
-  isAuthenticated: boolean
-  login: () => Promise<void>
-  logout: () => Promise<void>
-  signIn: (email: string, password: string) => Promise<{ error: { message: string } | null }>
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: { message: string } | null }>
-  signOut: () => Promise<void>
-  resetPassword: (email: string) => Promise<{ error: { message: string } | null }>
+  user: User | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error: { message: string } | null }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: { message: string } | null }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: { message: string } | null }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,105 +30,132 @@ const AuthContext = createContext<AuthContextType>({
   signUp: async () => ({ error: null }),
   signOut: async () => {},
   resetPassword: async () => ({ error: null }),
-})
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createClient()
+    // Check if Supabase is configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('your-project') || !supabaseUrl.includes('supabase.co')) {
+      // Supabase not configured yet - use demo mode
+      setLoading(false);
+      return;
+    }
+
+    let supabase: any;
+    try {
+      const { createClient } = require('@/lib/supabase/client');
+      supabase = createClient();
+    } catch {
+      setLoading(false);
+      return;
+    }
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: any) => {
       if (session?.user) {
         setUser({
           id: session.user.id,
           email: session.user.email,
           name: session.user.user_metadata.full_name,
-        })
+        });
       }
-      setLoading(false)
-    })
+      setLoading(false);
+    });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       if (session?.user) {
         setUser({
           id: session.user.id,
           email: session.user.email,
           name: session.user.user_metadata.full_name,
-        })
+        });
       } else {
-        setUser(null)
+        setUser(null);
       }
-      setLoading(false)
-    })
+      setLoading(false);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
   const login = async () => {
-    const supabase = createClient()
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl || !supabaseUrl.includes('supabase.co')) {
+      alert('Please configure Supabase first');
+      return;
+    }
+    const { createClient } = require('@/lib/supabase/client');
+    const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
-    })
-  }
+    });
+  };
 
   const logout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    setUser(null)
-  }
+    setUser(null);
+  };
 
   const signIn = async (email: string, password: string) => {
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) {
-      return { error: { message: error.message } }
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl || !supabaseUrl.includes('supabase.co')) {
+      return { error: { message: 'Supabase not configured' } };
     }
-    return { error: null }
-  }
+    const { createClient } = require('@/lib/supabase/client');
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      return { error: { message: error.message } };
+    }
+    return { error: null };
+  };
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const supabase = createClient()
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl || !supabaseUrl.includes('supabase.co')) {
+      return { error: { message: 'Supabase not configured' } };
+    }
+    const { createClient } = require('@/lib/supabase/client');
+    const supabase = createClient();
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    })
+      options: { data: { full_name: fullName } },
+    });
     if (error) {
-      return { error: { message: error.message } }
+      return { error: { message: error.message } };
     }
-    return { error: null }
-  }
+    return { error: null };
+  };
 
   const signOut = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    setUser(null)
-  }
+    setUser(null);
+  };
 
   const resetPassword = async (email: string) => {
-    const supabase = createClient()
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl || !supabaseUrl.includes('supabase.co')) {
+      return { error: { message: 'Supabase not configured' } };
+    }
+    const { createClient } = require('@/lib/supabase/client');
+    const supabase = createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/reset-password`,
-    })
+    });
     if (error) {
-      return { error: { message: error.message } }
+      return { error: { message: error.message } };
     }
-    return { error: null }
-  }
+    return { error: null };
+  };
 
   return React.createElement(
     AuthContext.Provider,
@@ -147,9 +173,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } 
     },
     children
-  )
+  );
 }
 
 export function useAuth() {
-  return useContext(AuthContext)
+  return useContext(AuthContext);
 }

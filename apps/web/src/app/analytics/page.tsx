@@ -1,13 +1,15 @@
-'use client'
+'use client';
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react';
 import { 
   TrendingUp, TrendingDown, Activity, Moon, Brain, 
   ArrowUp, ArrowDown, Minus, Award
-} from 'lucide-react'
-import { Card, StatCard, ProgressBar } from '@/components/ui'
-import { useAuth } from '@/hooks/useAuth'
-import { useProgress } from '@/hooks/useProgress'
+} from 'lucide-react';
+import { Card } from '@/components/design-system';
+import { StatCard } from '@/components/ui/StatCard';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { useAuth } from '@/hooks/useAuth';
+import { useProgress } from '@/hooks/useProgress';
 
 // Mock data for demonstration
 const MOCK_WEEKLY_DATA = [
@@ -18,7 +20,7 @@ const MOCK_WEEKLY_DATA = [
   { day: 'Fri', mood: 7, energy: 6, sleep: 7, wellness: 76 },
   { day: 'Sat', mood: 9, energy: 8, sleep: 9, wellness: 92 },
   { day: 'Sun', mood: 8, energy: 7, sleep: 8, wellness: 85 },
-]
+];
 
 const MOCK_MODULE_STATS = [
   { name: 'Identity', progress: 75, trend: 5, sessions: 12 },
@@ -26,19 +28,24 @@ const MOCK_MODULE_STATS = [
   { name: 'Emotional', progress: 60, trend: 8, sessions: 8 },
   { name: 'Recovery', progress: 45, trend: -3, sessions: 6 },
   { name: 'Sensory', progress: 30, trend: 10, sessions: 4 },
-]
+];
 
 export default function AnalyticsPage() {
-  const { user } = useAuth()
-  const { wellnessEntries, moduleProgress, loading } = useProgress(user?.id || null)
-  const [period, setPeriod] = useState<'week' | 'month'>('week')
+  const { user } = useAuth();
+  const { wellnessEntries } = useProgress(user?.id || null);
+  const [period, setPeriod] = useState<'week' | 'month'>('week');
 
   const stats = useMemo(() => {
-    const recent = wellnessEntries.length > 0 ? wellnessEntries.slice(-7) : MOCK_WEEKLY_DATA
-    
-    const avgMood = recent.reduce((sum, e) => sum + (e.mood || 7), 0) / recent.length
-    const avgEnergy = recent.reduce((sum, e) => sum + (e.energy || 6), 0) / recent.length
-    const avgSleep = recent.reduce((sum, e) => sum + (e.sleep || 7), 0) / recent.length
+    const recent = wellnessEntries.length > 0 ? wellnessEntries.slice(-7) : MOCK_WEEKLY_DATA;
+    const avgMood = recent.length > 0 
+      ? recent.reduce((sum, e) => sum + (e.mood || 7), 0) / recent.length 
+      : 7;
+    const avgEnergy = recent.length > 0 
+      ? recent.reduce((sum, e) => sum + (e.energy || 6), 0) / recent.length 
+      : 6;
+    const avgSleep = recent.length > 0 
+      ? recent.reduce((sum, e) => sum + (e.sleep || 7), 0) / recent.length 
+      : 7;
     
     return {
       avgMood: avgMood.toFixed(1),
@@ -46,8 +53,8 @@ export default function AnalyticsPage() {
       avgSleep: avgSleep.toFixed(1),
       streak: 5,
       totalEntries: wellnessEntries.length || 47,
-    }
-  }, [wellnessEntries])
+    };
+  }, [wellnessEntries]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 lg:p-8">
@@ -88,27 +95,23 @@ export default function AnalyticsPage() {
             value={stats.avgMood}
             icon="😊"
             trend={{ value: 0.3, positive: true }}
-            color="from-pink-500 to-rose-500"
           />
           <StatCard
             label="Average Energy"
             value={stats.avgEnergy}
             icon="⚡"
             trend={{ value: 0.5, positive: true }}
-            color="from-yellow-500 to-orange-500"
           />
           <StatCard
             label="Sleep Average"
             value={`${stats.avgSleep}h`}
             icon="🌙"
             trend={{ value: 0.2, positive: true }}
-            color="from-indigo-500 to-purple-500"
           />
           <StatCard
             label="Wellness Streak"
             value={stats.streak}
             icon="🔥"
-            color="from-amber-500 to-orange-600"
           />
         </div>
 
@@ -116,7 +119,7 @@ export default function AnalyticsPage() {
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-green-500" />
-              Mood & Energy Trend
+              Mood and Energy Trend
             </h2>
             <TrendChart data={MOCK_WEEKLY_DATA} />
           </Card>
@@ -152,23 +155,23 @@ export default function AnalyticsPage() {
           <InsightCard
             icon="⚠️"
             title="Recovery Needed"
-            description="Your burnout risk is elevated. Consider taking a rest day."
+            description="Your burnout risk is elevated. Consider adding a rest day."
             color="bg-amber-50 dark:bg-amber-900/20"
           />
           <InsightCard
             icon="🎯"
             title="Keep Going"
-            description="You're 75% through Identity. Just 3 more exercises!"
+            description="You are 75% through Identity. Just 3 more exercises!"
             color="bg-blue-50 dark:bg-blue-900/20"
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function TrendChart({ data }: { data: typeof MOCK_WEEKLY_DATA }) {
-  const max = 10
+  const max = 10;
   return (
     <div className="flex items-end justify-between h-48 pb-4">
       {data.map((day, i) => (
@@ -181,11 +184,11 @@ function TrendChart({ data }: { data: typeof MOCK_WEEKLY_DATA }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 function SleepChart({ data }: { data: typeof MOCK_WEEKLY_DATA }) {
-  const max = 10
+  const max = 10;
   return (
     <div className="flex items-end justify-between h-48 pb-4">
       {data.map((day, i) => (
@@ -197,13 +200,13 @@ function SleepChart({ data }: { data: typeof MOCK_WEEKLY_DATA }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 function ModuleProgressCard({ module }: { module: typeof MOCK_MODULE_STATS[0] }) {
   const trendIcon = module.trend > 0 ? <ArrowUp className="w-4 h-4 text-green-500" /> :
                     module.trend < 0 ? <ArrowDown className="w-4 h-4 text-red-500" /> :
-                    <Minus className="w-4 h-4 text-slate-400" />
+                    <Minus className="w-4 h-4 text-slate-400" />;
   
   return (
     <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
@@ -214,7 +217,7 @@ function ModuleProgressCard({ module }: { module: typeof MOCK_MODULE_STATS[0] })
       <ProgressBar progress={module.progress} color="from-purple-500 to-pink-500" />
       <p className="text-sm text-slate-500 mt-2">{module.sessions} sessions this week</p>
     </div>
-  )
+  );
 }
 
 function InsightCard({ icon, title, description, color }: { icon: string; title: string; description: string; color: string }) {
@@ -228,5 +231,5 @@ function InsightCard({ icon, title, description, color }: { icon: string; title:
         </div>
       </div>
     </Card>
-  )
+  );
 }
