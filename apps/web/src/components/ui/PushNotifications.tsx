@@ -1,4 +1,4 @@
-// Push Notifications Component
+'use client';
 
 import { Bell, BellOff, Smartphone, Settings2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -12,7 +12,7 @@ interface NotificationSettings {
 }
 
 export function PushNotifications() {
-  const [permission, setPermission] = useState<NotificationPermission>('default');
+  const [permission, setPermission] = useState<NotificationPermission>('default'));
   const [settings, setSettings] = useState<NotificationSettings>({
     enabled: false,
     dailyReminder: true,
@@ -45,15 +45,13 @@ export function PushNotifications() {
     }
   };
 
-  const saveSettings = (newSettings: Partial<NotificationSettings>) => {
-    const updated = { ...settings, ...newSettings };
-    setSettings(updated);
-    localStorage.setItem('notificationSettings', JSON.stringify(updated));
-  };
-
   const toggleSetting = (key: keyof NotificationSettings) => {
     if (!settings.enabled) return;
-    saveSettings({ ...settings, [key]: !settings[key] });
+    setSettings(prev => {
+      const updated = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('notificationSettings', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const getPermissionLabel = () => {
@@ -153,7 +151,7 @@ function ToggleSetting({ label, description, enabled, onToggle, disabled }: Togg
         disabled={disabled}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
           enabled ? 'bg-green-500' : 'bg-slate-300 dark:bg-slate-600'
-        } disabled:opacity-50`}
+        } ${disabled ? 'opacity-50' : ''}`}
       >
         <span
           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
