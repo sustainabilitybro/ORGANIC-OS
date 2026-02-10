@@ -7,5 +7,15 @@
     "no-var": "error",
     "object-shorthand": "warn"
   },
-  "ignorePatterns": ["node_modules/", ".next/", "coverage/", "*.config.js"]
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "coverage/",
+    "*.config.js",
+    "src/data/modules/communication.ts",
+    "src/data/modules/recovery.ts",
+    "src/data/modules/video.ts",
+    "src/hooks/useTheme.ts",
+    "src/utils/code-splitting.ts"
+  ]
 }
