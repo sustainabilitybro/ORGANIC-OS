@@ -2,7 +2,7 @@
 // Calendar sync and wellness reminders
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Card, Button, Input, Badge, Switch } from '../design-system';
+import { Card, Button, Input, Badge, Switch, Select } from '../design-system';
 
 // ============ Types ============
 
