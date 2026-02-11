@@ -12,7 +12,7 @@ interface NotificationSettings {
 }
 
 export function PushNotifications() {
-  const [permission, setPermission] = useState<NotificationPermission>('default'));
+  const [permission, setPermission] = useState<NotificationPermission>('default');
   const [settings, setSettings] = useState<NotificationSettings>({
     enabled: false,
     dailyReminder: true,

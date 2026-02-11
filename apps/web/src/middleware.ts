@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  const cookieStore = await import('next/headers').then(h => h.cookies())
+  const cookieStore = (await import('next/headers')).cookies()
   
   const supabase = createServerClient(
     supabaseUrl,
@@ -21,11 +21,11 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return cookieStore().getAll()
+          return cookieStore.getAll()
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore().set(name, value, options)
+            cookieStore.set(name, value, options)
           )
         },
       },

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
 // Valid modules that can be accessed
-const VALID_MODULES = [
+const VALID_TABLES = [
   'users',
   'identity_profiles',
   'sensory_preferences',
@@ -22,16 +22,16 @@ const VALID_MODULES = [
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const module = searchParams.get('module')
+    const tableName = searchParams.get('tableName')
     
-    if (!module || !VALID_MODULES.includes(module)) {
+    if (!tableName || !VALID_TABLES.includes(tableName)) {
       return NextResponse.json(
-        { error: `Invalid module. Valid: ${VALID_MODULES.join(', ')}` },
+        { error: `Invalid table. Valid: ${VALID_TABLES.join(', ')}` },
         { status: 400 }
       )
     }
 
-    const res = await query(`SELECT * FROM ${module} ORDER BY created_at DESC LIMIT 100`)
+    const res = await query(`SELECT * FROM ${tableName} ORDER BY created_at DESC LIMIT 100`)
     return NextResponse.json({ data: res.rows })
   } catch (error: any) {
     console.error('API Error:', error)
@@ -42,11 +42,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { module, data } = body
+    const { tableName, data } = body
     
-    if (!module || !VALID_MODULES.includes(module)) {
+    if (!tableName || !VALID_TABLES.includes(tableName)) {
       return NextResponse.json(
-        { error: `Invalid module. Valid: ${VALID_MODULES.join(', ')}` },
+        { error: `Invalid table. Valid: ${VALID_TABLES.join(', ')}` },
         { status: 400 }
       )
     }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const placeholders = values.map((_, i) => `$${i + 1}`).join(', ')
 
     const res = await query(
-      `INSERT INTO ${module} (${columns}) VALUES (${placeholders}) RETURNING *`,
+      `INSERT INTO ${tableName} (${columns}) VALUES (${placeholders}) RETURNING *`,
       values
     )
     

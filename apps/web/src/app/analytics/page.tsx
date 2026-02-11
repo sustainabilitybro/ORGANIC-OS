@@ -38,13 +38,13 @@ export default function AnalyticsPage() {
   const stats = useMemo(() => {
     const recent = wellnessEntries.length > 0 ? wellnessEntries.slice(-7) : MOCK_WEEKLY_DATA;
     const avgMood = recent.length > 0 
-      ? recent.reduce((sum, e) => sum + (e.mood || 7), 0) / recent.length 
+      ? recent.reduce((sum, e) => sum + ((e as any).mood || (e as any).mood_score || 7), 0) / recent.length 
       : 7;
     const avgEnergy = recent.length > 0 
-      ? recent.reduce((sum, e) => sum + (e.energy || 6), 0) / recent.length 
+      ? recent.reduce((sum, e) => sum + ((e as any).energy || (e as any).energy_level || 6), 0) / recent.length 
       : 6;
     const avgSleep = recent.length > 0 
-      ? recent.reduce((sum, e) => sum + (e.sleep || 7), 0) / recent.length 
+      ? recent.reduce((sum, e) => sum + ((e as any).sleep || (e as any).sleep_hours || 7), 0) / recent.length 
       : 7;
     
     return {

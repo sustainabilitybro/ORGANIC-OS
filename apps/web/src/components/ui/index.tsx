@@ -4,3 +4,4 @@ export { Card, Button, Input, Badge, Progress, Avatar, Select, Textarea, Switch 
 export { StatCard } from './StatCard'
 export { ProgressBar } from './ProgressBar'
 export { DataExport } from './DataExport'
+export { PushNotifications } from './PushNotifications'
