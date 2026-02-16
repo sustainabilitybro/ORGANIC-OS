@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
+export const dynamic = 'force-dynamic'
 
 export default function Home() {
   const { user, signOut } = useAuth()

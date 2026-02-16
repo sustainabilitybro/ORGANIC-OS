@@ -21,6 +21,15 @@ interface ModuleProgress {
   completed_topics: string[];
 }
 
+interface ProgressData {
+  streak: number;
+  weeklyProgress: number;
+  goalsCompleted: number;
+  meditationMinutes: number;
+  level: number;
+  xp: number;
+}
+
 export function useProgress(userId: string | null = null) {
   const [loading] = useState(false);
   
@@ -45,13 +54,20 @@ export function useProgress(userId: string | null = null) {
         id: '2',
         module_name: 'Wellness',
         progress_percentage: 100,
-        last_activity: '2024-01-10',
-        completed_topics: ['sleep', 'nutrition', 'exercise'],
+        last_activity: '-10',
+        completed_topics: ['sleep', '2024-01nutrition', 'exercise'],
       },
     };
   }, []);
   
-  const progress = 0;
+  const progress: ProgressData = {
+    streak: 5,
+    weeklyProgress: 45,
+    goalsCompleted: 12,
+    meditationMinutes: 180,
+    level: 3,
+    xp: 1250,
+  };
   const setProgress = () => {};
   
   return {

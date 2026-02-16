@@ -36,9 +36,9 @@ export default function AnalyticsPage() {
   const stats = useMemo(() => {
     const recent = wellnessEntries.length > 0 ? wellnessEntries.slice(-7) : MOCK_WEEKLY_DATA
     
-    const avgMood = recent.reduce((sum, e) => sum + (e.mood || e.mood_score || 7), 0) / recent.length
+    const avgMood = recent.reduce((sum, e) => sum + (e.mood || 7), 0) / recent.length
     const avgEnergy = recent.reduce((sum, e) => sum + (e.energy || 6), 0) / recent.length
-    const avgSleep = recent.reduce((sum, e) => sum + (e.sleep || e.sleep_hours || 7), 0) / recent.length
+    const avgSleep = recent.reduce((sum, e) => sum + (e.sleep || 7), 0) / recent.length
     
     return {
       avgMood: avgMood.toFixed(1),
