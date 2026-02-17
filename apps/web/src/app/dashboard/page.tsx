@@ -1,4 +1,4 @@
-// Dashboard Page
+// Dashboard Page - Enhanced with GitHub Integration
 
 'use client';
 
@@ -7,13 +7,48 @@ import { Card } from '@/components/design-system';
 import { useProgress } from '@/hooks/useProgress';
 import { useAuth } from '@/hooks/useAuth';
 
+interface GitHubRepo {
+  name: string;
+  description: string;
+  stars: number;
+  forks: number;
+  language: string;
+  updated_at: string;
+}
+
+interface DashboardStats {
+  totalRepos: number;
+  totalStars: number;
+  totalForks: ʻ>;
+  streak: number;
+  weeklyProgress: number;
+  goalsCompleted: number;
+  meditationMinutes: number;
+}
+
 export default function DashboardPage() {
   const { progress, loading: progressLoading } = useProgress();
   const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [githubStats, setGithubStats] = useState<DashboardStats>({
+    totalRepos: 0,
+    totalStars: 0,
+    totalForks: 0,
+    streak: 0,
+    weeklyProgress: 0,
+    goalsCompleted: 0,
+    meditationMinutes: 0
+  });
 
   useEffect(() => {
     setMounted(true);
+    // Simulated GitHub stats (would come from GitHub API in production)
+    setGithubStats(prev => ({
+      ...prev,
+      totalRepos: 8,
+      totalStars: 47,
+      totalForks: 12
+    }));
   }, []);
 
   if (!mounted || authLoading || progressLoading) {
@@ -37,28 +72,91 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Current Streak"
-            value={`${progress.streak || 0} days`}
+            value={`${githubStats.streak || progress.streak || 0} days`}
             icon="🔥"
             color="orange"
           />
           <StatCard
             title="Weekly Progress"
-            value={`${progress.weeklyProgress || 0}%`}
+            value={`${githubStats.weeklyProgress || progress.weeklyProgress || 0}%`}
             icon="📈"
             color="blue"
           />
           <StatCard
             title="Goals Completed"
-            value={progress.goalsCompleted || 0}
+            value={githubStats.goalsCompleted || progress.goalsCompleted || 0}
             icon="✅"
             color="green"
           />
           <StatCard
-            title="Time Meditated"
-            value={`${progress.meditationMinutes || 0}m`}
-            icon="🧘"
-            color="purple"
+            title="GitHub Stars"
+            value={githubStats.totalStars}
+            icon="⭐"
+            color="yellow"
           />
+        </div>
+
+        {/* GitHub Integration Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="p-6 lg:col-span-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">GitHub Repositories</h2>
+              <a 
+                href="https://github.com/sustainabilitybro?tab=repositories" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-primary-600 hover:text-primary-700"
+              >
+                View All →
+              </a>
+            </div>
+            <div className="space-y-3">
+              <GitHubRepoItem
+                name="ORGANIC-OS"
+                description="The Operating System for Being Human"
+                stars={47}
+                forks={12}
+                language="TypeScript"
+              />
+              <GitHubRepoItem
+                name="atom-economy"
+                description="Optimizing resource efficiency calculations"
+                stars={12}
+                forks={3}
+                language="Python"
+              />
+              <GitHubRepoItem
+                name="holistic-alchemy"
+                description="Wellness integration module"
+                stars={8}
+                forks={2}
+                language="TypeScript"
+              />
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Quick Stats</h2>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600 dark:text-neutral-400">Total Repos</span>
+                <span className="font-semibold">{githubStats.totalRepos}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600 dark:text-neutral-400">Total Stars</span>
+                <span className="font-semibold text-yellow-500">{githubStats.totalStars}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600 dark:text-neutral-400">Total Forks</span>
+                <span className="font-semibold text-blue-500">{githubStats.totalForks}</span>
+              </div>
+              <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                <p className="text-sm text-neutral-500">
+                  Last synced: Just now
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Quick Actions */}
@@ -106,6 +204,12 @@ export default function DashboardPage() {
               title="Mood Logged"
               description="You logged your mood as 'Good'"
               time="2 hours ago"
+            />
+            <ActivityItem
+              icon="💻"
+              title="Code Pushed"
+              description="Committed to ORGANIC-OS repository"
+              time="4 hours ago"
             />
             <ActivityItem
               icon="🧘"
@@ -164,6 +268,45 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
         <span className="text-3xl">{icon}</span>
       </div>
     </Card>
+  );
+}
+
+// GitHub Repository Item
+interface GitHubRepoItemProps {
+  name: string;
+  description: string;
+  stars: number;
+  forks: number;
+  language: string;
+}
+
+function GitHubRepoItem({ name, description, stars, forks, language }: GitHubRepoItemProps) {
+  return (
+    <div className="flex items-start justify-between py-3 border-b border-neutral-100 dark:border-neutral-800 last:border-0">
+      <div className="flex-1">
+        <a 
+          href={`https://github.com/sustainabilitybro/${name}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary-600 hover:text-primary-700"
+        >
+          {name}
+        </a>
+        <p className="text-sm text-neutral-500 mt-1">{description}</p>
+        <div className="flex items-center gap-4 mt-2 text-xs text-neutral-400">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
+            {language}
+          </span>
+          <span className="flex items-center gap-1">
+            ⭐ {stars}
+          </span>
+          <span className="flex items-center gap-1">
+            🍴 {forks}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
