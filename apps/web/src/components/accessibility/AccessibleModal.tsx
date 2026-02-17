@@ -49,15 +49,10 @@ export function AccessibleModal({
 
     // Focus the modal
     const modal = modalRef.current;
-    const focusableElements = modal?.querySelectorAll<
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    >(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = modal?.querySelectorAll(focusableSelector);
     const firstFocusable = focusableElements?.[0] as HTMLElement;
-    const lastFocusable = focusableElements?.[
-      focusableElements.length - 1
-    ] as HTMLElement;
+    const lastFocusable = focusableElements?.[focusableElements.length - 1] as HTMLElement;
 
     firstFocusable?.focus();
 
@@ -79,80 +74,53 @@ export function AccessibleModal({
 
     document.addEventListener('keydown', handleTab);
 
-    // Prevent body scroll
-    document.body.style.overflow = 'hidden';
-
+    // Cleanup
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keydown', handleTab);
-      document.body.style.overflow = '';
 
-      // Restore focus to the previously focused element
+      // Restore focus
       previousActiveElement.current?.focus();
     };
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen, handleKeyDown, onClose]);
 
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      role="presentation"
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
-      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 transition-opacity"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
-        aria-hidden="true"
       />
-
-      {/* Modal */}
       <div
         ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
         className={cn(
-          'relative w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl',
-          'transform transition-all',
-          sizeClasses[size],
-          'max-h-[90vh] overflow-hidden flex flex-col'
+          'relative w-full bg-white dark:bg-neutral-800 rounded-xl shadow-2xl',
+          'max-h-[90vh] overflow-hidden flex flex-col',
+          sizeClasses[size]
         )}
+        tabIndex={-1}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b dark:border-gray-700">
-          <h2
-            id="modal-title"
-            className="text-lg font-semibold text-gray-900 dark:text-white"
-          >
+        <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-700">
+          <h2 id="modal-title" className="text-lg font-semibold">
             {title}
           </h2>
           <button
-            type="button"
             onClick={onClose}
-            className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors"
             aria-label="Close modal"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          {children}
-        </div>
+        <div className="p-4 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

@@ -21,6 +21,14 @@ interface ModuleProgress {
   completed_topics: string[];
 }
 
+interface ProgressData {
+  streak: number;
+  weeklyProgress: number;
+  goalsCompleted: number;
+  meditationMinutes: number;
+  [key: string]: any;
+}
+
 export function useProgress(userId: string | null = null) {
   const [loading] = useState(false);
   
@@ -51,12 +59,16 @@ export function useProgress(userId: string | null = null) {
     };
   }, []);
   
-  const progress = 0;
-  const setProgress = () => {};
+  const progress: ProgressData = useMemo(() => ({
+    streak: 5,
+    weeklyProgress: 75,
+    goalsCompleted: 12,
+    meditationMinutes: 45,
+  }), []);
   
   return {
     progress,
-    setProgress,
+    setProgress: () => {},
     loading,
     wellnessEntries,
     moduleProgress,

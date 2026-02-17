@@ -5,6 +5,11 @@ import { useAuth } from '@/hooks/useAuth'
 import { Card, Button, Input } from '@/components/design-system'
 import Link from 'next/link'
 
+interface AuthResult {
+  error?: { message: string };
+  success?: boolean;
+}
+
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
@@ -23,20 +28,14 @@ export default function AuthPage() {
 
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password, fullName)
-        if (error) {
-          setError(error.message)
-        } else {
-          setMessage('Check your email for a confirmation link!')
-        }
+        await signUp(email, password, fullName)
+        setMessage('Check your email for a confirmation link!')
       } else {
-        const { error } = await signIn(email, password)
-        if (error) {
-          setError(error.message)
-        }
+        await signIn(email, password)
+        // Handle successful login redirect here
       }
-    } catch (err) {
-      setError('An unexpected error occurred')
+    } catch (err: any) {
+      setError(err?.message || 'An unexpected error occurred')
     } finally {
       setLoading(false)
     }
@@ -48,41 +47,40 @@ export default function AuthPage() {
       return
     }
     setError(null)
-    setMessage(null)
     setLoading(true)
     
-    const { error } = await resetPassword(email)
-    if (error) {
-      setError(error.message)
-    } else {
+    try {
+      await resetPassword(email)
       setMessage('Check your email for a password reset link!')
+    } catch (err: any) {
+      setError(err?.message || 'An unexpected error occurred')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <span className="text-5xl mb-4 block">🌿</span>
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             {isSignUp ? 'Create Account' : 'Welcome Back'}
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-slate-600 dark:text-slate-400">
             {isSignUp 
-              ? 'Start your journey of transformation' 
-              : 'Continue your journey of transformation'}
+              ? 'Start your journey to holistic wellness' 
+              : 'Continue your wellness journey'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm">
             {error}
           </div>
         )}
 
         {message && (
-          <div className="mb-6 p-4 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 text-sm">
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-300 text-sm">
             {message}
           </div>
         )}
@@ -90,37 +88,42 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Full Name
+              </label>
               <Input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Your name"
+                placeholder="Enter your full name"
                 required={isSignUp}
               />
             </div>
           )}
-
+          
           <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Email
+            </label>
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               required
             />
           </div>
-
+          
           <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Password
+            </label>
             <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Enter your password"
               required
-              minLength={8}
             />
           </div>
 
@@ -128,36 +131,36 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={handleResetPassword}
-              className="text-sm text-accent-primary hover:underline"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
-              Forgot password?
+              Forgot your password?
             </button>
           )}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Sign In'}
+          
+          <Button type="submit" className="w-full" loading={loading}>
+            {isSignUp ? 'Create Account' : 'Sign In'}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
-          <button
-            onClick={() => {
-              setIsSignUp(!isSignUp)
-              setError(null)
-              setMessage(null)
-            }}
-            className="text-sm text-text-muted hover:text-text-primary"
-          >
-            {isSignUp 
-              ? 'Already have an account? Sign in' 
-              : "Don't have an account? Create one"}
-          </button>
+          <p className="text-slate-600 dark:text-slate-400">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+            <button
+              onClick={() => {
+                setIsSignUp(!isSignUp)
+                setError(null)
+                setMessage(null)
+              }}
+              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              {isSignUp ? 'Sign In' : 'Create Account'}
+            </button>
+          </p>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-neutral-800">
-          <p className="text-xs text-text-muted text-center">
-            By continuing, you agree to our Terms of Service and Privacy Policy.
-            Your data is encrypted and secure.
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+          <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+            By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
       </Card>

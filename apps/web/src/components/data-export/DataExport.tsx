@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase'
 'use client'
 
 import { useState, useCallback } from 'react'
@@ -80,7 +81,7 @@ export default function DataExport() {
     
     try {
       // Fetch all user data
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await createClient().auth.getUser()
       
       if (!user) {
         setStatus({ type: 'error', message: 'Not authenticated' })
@@ -90,9 +91,9 @@ export default function DataExport() {
 
       // Fetch data in parallel
       const [wellnessRes, progressRes, conversationsRes] = await Promise.all([
-        supabase.from('wellness_entries').select('*').eq('user_id', user.id),
-        supabase.from('module_progress').select('*').eq('user_id', user.id),
-        supabase.from('conversations').select('*').eq('user_id', user.id)
+        createClient().from('wellness_entries').select('*').eq('user_id', user.id),
+        createClient().from('module_progress').select('*').eq('user_id', user.id),
+        createClient().from('conversations').select('*').eq('user_id', user.id)
       ])
 
       const exportData: ExportData = {
@@ -142,7 +143,7 @@ export default function DataExport() {
       const text = await file.text()
       const data: ExportData = JSON.parse(text)
 
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await createClient().auth.getUser()
       
       if (!user) {
         setStatus({ type: 'error', message: 'Not authenticated' })
@@ -156,7 +157,7 @@ export default function DataExport() {
           ...entry,
           user_id: user.id
         }))
-        await supabase.from('wellness_entries').upsert(entries)
+        await createClient().from('wellness_entries').upsert(entries)
       }
 
       // Import module progress
@@ -165,7 +166,7 @@ export default function DataExport() {
           ...progressItem,
           user_id: user.id
         }))
-        await supabase.from('module_progress').upsert(progress)
+        await createClient().from('module_progress').upsert(progress)
       }
 
       setStatus({ 

@@ -28,7 +28,7 @@ const InfoIcon = () => (
 
 export default function WellnessPage() {
   const { remedies, favorites, dailyProtocols, toggleFavorite, addToProtocol, removeFromProtocol } = useWellnessStore();
-  const [selectedRemedy, setSelectedRemedy] = useState<Remedy | null>(null);
+  const [selectedRemedy, setSelectedRemedy] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredRemedies = remedies.filter(r =>
