@@ -102,7 +102,7 @@ export default function AtomEconomyPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [hoveredProcess, setHoveredProcess] = useState<string | null>(null)
 
-  const categories = ['All', ...new Set(atomProcesses.map(p => p.category))]
+  const categories = ['All', ...Array.from(new Set(atomProcesses.map(p => p.category)))]
   const filteredProcesses = selectedCategory === 'All' 
     ? atomProcesses 
     : atomProcesses.filter(p => p.category === selectedCategory)

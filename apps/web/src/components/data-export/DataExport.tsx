@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase'
 
 import { useState, useCallback } from 'react'
 import { Download, Upload, FileJson, Shield, CheckCircle, AlertCircle } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client';
+const supabase = createClient();
 
 // Type definitions for export/import data
 interface UserData {

@@ -412,7 +412,7 @@ export const CONFLICT_RESOLUTION = {
         "Express appreciation",
         "Document if important"
       }
-    }
+    },
   ]
 }
 

@@ -10,7 +10,7 @@ interface OnboardingStep {
   id: string;
   title: string;
   description: string;
-  component: React.ComponentType<OnboardingData>;
+  component: React.ComponentType<any>;
 }
 
 interface OnboardingData {
@@ -86,7 +86,7 @@ const STEPS: OnboardingStep[] = [
 
 // ============ Step Components ============
 
-function WelcomeStep({ data, updateData }: OnboardingData & { updateData: (d: Partial<OnboardingData>) => void }) {
+function WelcomeStep({ data, updateData }: { data: OnboardingData; updateData: (d: Partial<OnboardingData>) => void }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -129,7 +129,7 @@ function WelcomeStep({ data, updateData }: OnboardingData & { updateData: (d: Pa
   );
 }
 
-function ProfileStep({ data, updateData }: OnboardingData & { updateData: (d: Partial<OnboardingData>) => void }) {
+function ProfileStep({ data, updateData }: { data: OnboardingData; updateData: (d: Partial<OnboardingData>) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -174,7 +174,7 @@ function ProfileStep({ data, updateData }: OnboardingData & { updateData: (d: Pa
   );
 }
 
-function GoalsStep({ data, updateData }: OnboardingData & { updateData: (d: Partial<OnboardingData>) => void }) {
+function GoalsStep({ data, updateData }: { data: OnboardingData; updateData: (d: Partial<OnboardingData>) => void }) {
   const goalOptions = [
     { value: 'mental_health', label: 'Improve mental health', icon: '🧠' },
     { value: 'productivity', label: 'Boost productivity', icon: '⚡' },
@@ -263,7 +263,7 @@ function GoalsStep({ data, updateData }: OnboardingData & { updateData: (d: Part
   );
 }
 
-function PreferencesStep({ data, updateData }: OnboardingData & { updateData: (d: Partial<OnboardingData>) => void }) {
+function PreferencesStep({ data, updateData }: { data: OnboardingData; updateData: (d: Partial<OnboardingData>) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -315,7 +315,7 @@ function PreferencesStep({ data, updateData }: OnboardingData & { updateData: (d
   );
 }
 
-function NotificationsStep({ data, updateData }: OnboardingData & { updateData: (d: Partial<OnboardingData>) => void }) {
+function NotificationsStep({ data, updateData }: { data: OnboardingData; updateData: (d: Partial<OnboardingData>) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -367,7 +367,7 @@ function NotificationsStep({ data, updateData }: OnboardingData & { updateData: 
   );
 }
 
-function CompleteStep({ data, complete }: OnboardingData & { complete: () => void }) {
+function CompleteStep({ data, complete }: { data: OnboardingData; complete: () => void }) {
   return (
     <div className="space-y-6 text-center">
       <div className="text-6xl mb-4">🎉</div>
