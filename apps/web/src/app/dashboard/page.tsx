@@ -19,7 +19,7 @@ interface GitHubRepo {
 interface DashboardStats {
   totalRepos: number;
   totalStars: number;
-  totalForks: ʻ>;
+  totalForks: number;;
   streak: number;
   weeklyProgress: number;
   goalsCompleted: number;
