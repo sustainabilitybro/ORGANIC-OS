@@ -53,10 +53,10 @@ export const BURNOUT_ASSESSMENT = {
     }
   ],
   total_score_interpretation: {
-    0_19: "Low burnout risk - Maintain your practices",
-    20_39: "Moderate burnout risk - Increase recovery activities",
-    40_59: "High burnout risk - Immediate intervention needed",
-    60_plus: "Severe burnout - Professional help recommended"
+    "0-19": "Low burnout risk - Maintain your practices",
+    "20-39": "Moderate burnout risk - Increase recovery activities",
+    "40-59": "High burnout risk - Immediate intervention needed",
+    "60+": "Severe burnout - Professional help recommended"
   }
 }
 

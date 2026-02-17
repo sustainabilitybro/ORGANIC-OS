@@ -125,3 +125,5 @@ export function AccessibleModal({
     </div>
   );
 }
+
+export default AccessibleModal;
