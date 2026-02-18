@@ -1,37 +1,6 @@
 // Code Splitting - Route-based lazy loading
 
-import { lazy, Suspense, ReactNode } from 'react';
-
-// Lazy loaded components
-export const AnalyticsDashboard = lazy(() =>
-  import('../components/analytics/AnalyticsDashboard').catch(() => ({
-    default: () => <div>Loading analytics...</div>
-  }))
-);
-
-export const OnboardingFlow = lazy(() =>
-  import('../components/onboarding/OnboardingFlow').catch(() => ({
-    default: () => <div>Loading onboarding...</div>
-  }))
-);
-
-export const GoogleCalendarIntegration = lazy(() =>
-  import('../components/integrations/GoogleCalendarIntegration').catch(() => ({
-    default: () => <div>Loading integration...</div>
-  }))
-);
-
-export const AIChat = lazy(() =>
-  import('../components/ai/AIChat').catch(() => ({
-    default: () => <div>Loading AI...</div>
-  }))
-);
-
-export const ReportGenerator = lazy(() =>
-  import('../components/reports/ReportGenerator').catch(() => ({
-    default: () => <div>Loading report...</div>
-  }))
-);
+import React, { lazy, Suspense, ReactNode } from 'react';
 
 // Loading fallback
 interface LoadingProps {
@@ -40,15 +9,32 @@ interface LoadingProps {
 }
 
 export function LoadingFallback({ message = 'Loading...', minHeight = '200px' }: LoadingProps) {
-  return (
-    <div style={{ minHeight, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="loading">
-        <span className="spinner" />
-        <p>{message}</p>
-      </div>
-    </div>
+  return React.createElement('div', { 
+    style: { minHeight, display: 'flex', alignItems: 'center', justifyContent: 'center' } 
+  },
+    React.createElement('div', { className: 'loading' },
+      React.createElement('span', { className: 'spinner' }),
+      React.createElement('p', null, message)
+    )
   );
 }
+
+// Error fallback component  
+function ErrorDiv() {
+  return React.createElement('div', { style: { padding: '2rem', textAlign: 'center' } },
+    React.createElement('h3', null, 'Something went wrong'),
+    React.createElement('button', { onClick: () => window.location.reload() }, 'Refresh')
+  );
+}
+
+// Lazy loaded components - only existing ones
+export const AnalyticsDashboard = lazy(() => 
+  import('../components/analytics/AnalyticsDashboard') as any
+);
+
+export const GoogleCalendarIntegration = lazy(() => 
+  import('../components/integrations/GoogleCalendarIntegration') as any
+);
 
 // Error boundary
 interface ErrorBoundaryState {
@@ -67,12 +53,7 @@ export class ErrorBoundary extends React.Component<
   
   render() {
     if (this.state.hasError) {
-      return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h3>Something went wrong</h3>
-          <button onClick={() => window.location.reload()}>Refresh</button>
-        </div>
-      );
+      return React.createElement(ErrorDiv);
     }
     return this.props.children;
   }
@@ -83,8 +64,7 @@ export function usePreloadRoutes() {
   const preload = (route: string) => {
     switch (route) {
       case '/analytics': import('../components/analytics/AnalyticsDashboard'); break;
-      case '/onboarding': import('../components/onboarding/OnboardingFlow'); break;
-      case '/ai': import('../components/ai/AIChat'); break;
+      case '/integrations/calendar': import('../components/integrations/GoogleCalendarIntegration'); break;
     }
   };
   return { preload };

@@ -164,15 +164,15 @@ export const VIDEO_SKILLS = [
         ]
       }
     ],
-    fillers_elimination: [
-      "Um", "uh", "like", "you know", "so",
+    fillers_elimination: {
+      fillers: ["Um", "uh", "like", "you know", "so"],
       strategies: [
         "Pause instead of filler",
         "Practice with recordings",
         "Slow down when nervous",
         "Know your content well"
       ]
-    ]
+    }
   },
   {
     name: "Script & Structure",

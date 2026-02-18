@@ -26,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: async () => {},
   logout: async () => {},
+  signOut: async () => {},
   signIn: async () => {},
   signUp: async () => {},
   resetPassword: async () => {},
@@ -40,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {};
+  const signOut = async () => {};
   const logout = async () => {
     setUser(null);
   };
@@ -49,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return React.createElement(
     AuthContext.Provider,
-    { value: { user, loading, isAuthenticated: !!user, login, logout, signIn, signUp, resetPassword } },
+    { value: { user, loading, isAuthenticated: !!user, login, logout, signOut, signIn, signUp, resetPassword } },
     children
   );
 }

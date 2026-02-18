@@ -192,7 +192,7 @@ export const EXERCISE_RECOMMENDATIONS = {
     ],
     cooldown: [
       { duration: "5 min", type: "Gradually reduce intensity", purpose: "Heart rate normalization" },
-      { duration: "5-10 min", type: "Static stretching", purpose: "Flexibility", purpose: "Recovery" }
+      { duration: "5-10 min", type: "Static stretching", purpose: "Flexibility and Recovery" }
     ]
   }
 };

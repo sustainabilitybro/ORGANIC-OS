@@ -411,7 +411,7 @@ export const CONFLICT_RESOLUTION = {
         "Set follow-up if needed",
         "Express appreciation",
         "Document if important"
-      }
+      ]
     },
   ]
 }
