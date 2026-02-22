@@ -70,22 +70,19 @@
       "static/chunks/main-app-ff75dc1c77f1d739.js",
       "static/chunks/app/identity/page-e96a190912fe380e.js"
     ],
+    "/sensory/page": [
+      "static/chunks/webpack-05c57566b3789cc6.js",
+      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
+      "static/chunks/69-64bd5c9bd55c79f9.js",
+      "static/chunks/main-app-ff75dc1c77f1d739.js",
+      "static/chunks/app/sensory/page-6b4f6a6594b71a8a.js"
+    ],
     "/recovery/page": [
       "static/chunks/webpack-05c57566b3789cc6.js",
       "static/chunks/fd9d1056-adf3cc1af16711a0.js",
       "static/chunks/69-64bd5c9bd55c79f9.js",
       "static/chunks/main-app-ff75dc1c77f1d739.js",
       "static/chunks/app/recovery/page-894ff6f30a020d2c.js"
-    ],
-    "/progress/page": [
-      "static/chunks/webpack-05c57566b3789cc6.js",
-      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
-      "static/chunks/69-64bd5c9bd55c79f9.js",
-      "static/chunks/main-app-ff75dc1c77f1d739.js",
-      "static/chunks/184-9cd70809c21bdd64.js",
-      "static/chunks/250-bccf7618b585c6a9.js",
-      "static/chunks/901-f2ec2f69b3ccc01d.js",
-      "static/chunks/app/progress/page-c46ba5571aba8c6c.js"
     ],
     "/settings/page": [
       "static/chunks/webpack-05c57566b3789cc6.js",
@@ -95,13 +92,6 @@
       "static/chunks/184-9cd70809c21bdd64.js",
       "static/chunks/901-f2ec2f69b3ccc01d.js",
       "static/chunks/app/settings/page-c271faa58fe7b79a.js"
-    ],
-    "/sensory/page": [
-      "static/chunks/webpack-05c57566b3789cc6.js",
-      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
-      "static/chunks/69-64bd5c9bd55c79f9.js",
-      "static/chunks/main-app-ff75dc1c77f1d739.js",
-      "static/chunks/app/sensory/page-6b4f6a6594b71a8a.js"
     ],
     "/sustainability/atom-economy/page": [
       "static/chunks/webpack-05c57566b3789cc6.js",
@@ -138,6 +128,24 @@
       "static/chunks/main-app-ff75dc1c77f1d739.js",
       "static/chunks/746-bc587679fabcfb34.js",
       "static/chunks/app/wellness/page-ea6a058dc565434c.js"
+    ],
+    "/progress/page": [
+      "static/chunks/webpack-05c57566b3789cc6.js",
+      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
+      "static/chunks/69-64bd5c9bd55c79f9.js",
+      "static/chunks/main-app-ff75dc1c77f1d739.js",
+      "static/chunks/184-9cd70809c21bdd64.js",
+      "static/chunks/250-bccf7618b585c6a9.js",
+      "static/chunks/901-f2ec2f69b3ccc01d.js",
+      "static/chunks/app/progress/page-c46ba5571aba8c6c.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-05c57566b3789cc6.js",
+      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
+      "static/chunks/69-64bd5c9bd55c79f9.js",
+      "static/chunks/main-app-ff75dc1c77f1d739.js",
+      "static/chunks/250-bccf7618b585c6a9.js",
+      "static/chunks/app/page-2dd2d41b796f5e77.js"
     ],
     "/dashboard/communication/page": [
       "static/chunks/webpack-05c57566b3789cc6.js",
@@ -200,14 +208,6 @@
       "static/chunks/184-9cd70809c21bdd64.js",
       "static/chunks/901-f2ec2f69b3ccc01d.js",
       "static/chunks/app/dashboard/sensory/page-82d41c2398a3212f.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-05c57566b3789cc6.js",
-      "static/chunks/fd9d1056-adf3cc1af16711a0.js",
-      "static/chunks/69-64bd5c9bd55c79f9.js",
-      "static/chunks/main-app-ff75dc1c77f1d739.js",
-      "static/chunks/250-bccf7618b585c6a9.js",
-      "static/chunks/app/page-2dd2d41b796f5e77.js"
     ],
     "/dashboard/wellness/page": [
       "static/chunks/webpack-05c57566b3789cc6.js",
