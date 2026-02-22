@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const ORG = 'sustainabilitybro';
+const USER = 'sustainabilitybro';
 
 interface Repo {
   name: string;
@@ -19,7 +19,7 @@ async function fetchRepo(owner: string, repo: string): Promise<Repo | null> {
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Organic-OS'
       },
-      next: { revalidate: 3600 } // Cache for 1 hour
+      next: { revalidate: 3600 }
     });
     
     if (!res.ok) return null;
@@ -40,10 +40,11 @@ async function fetchRepo(owner: string, repo: string): Promise<Repo | null> {
 }
 
 export async function GET() {
+  // Featured repos to track
   const repoNames = ['ORGANIC-OS', 'atom-economy', 'holistic-alchemy'];
   
   const repos = await Promise.all(
-    repoNames.map(name => fetchRepo(ORG, name.toLowerCase()))
+    repoNames.map(name => fetchRepo(USER, name.toLowerCase()))
   );
   
   const validRepos = repos.filter((r): r is Repo => r !== null);
