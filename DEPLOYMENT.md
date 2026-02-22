@@ -1,57 +1,47 @@
-# Organic OS - Deployment Guide
+# Organic OS Deployment Guide
 
-## Quick Deploy (2 minutes)
+## Quick Deploy to Vercel
 
-### 1. Get Vercel Token
-Go to: https://vercel.com/settings/tokens
-- Click "Create Token"
-- Name: "Organic OS"
-- Copy the token
+### Option 1: GitHub Actions (Recommended)
+1. Go to GitHub repository → Settings → Secrets
+2. Add these secrets:
+   - `VERCEL_TOKEN` - Get from https://vercel.com/account/tokens
+   - `VERCEL_ORG_ID` - `team_WlP2I2cuDT5CvhvFwarJEA1r`
+   - `VERCEL_PROJECT_ID` - `prj_0XqSq25LAG3fmwpmz5Z7ohcRPSmw`
+3. Push to main → Auto-deploys
 
-### 2. Add Secrets to GitHub
-1. https://github.com/sustainabilitybro/ORGANIC-OS/settings/secrets/actions
-2. Add: `VERCEL_TOKEN` = your token
-
-### 3. Done!
-GitHub Actions will auto-deploy on next push.
-
----
-
-## Manual Deploy (Vercel CLI)
-
+### Option 2: Vercel CLI
 ```bash
-cd apps/web
 npm i -g vercel
 vercel login
+cd apps/web
 vercel --prod
 ```
 
----
+### Option 3: Manual Import
+1. Go to https://vercel.com/new
+2. Import from GitHub: sustainabilitybro/ORGANIC-OS
+3. Set directory to: apps/web
+4. Deploy
 
-## Environment Variables Needed
+## Environment Variables
 
-For production, set these in Vercel:
+Required in Vercel:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+NEXT_PUBLIC_API_URL=https://your-domain.com
+```
 
-| Variable | Value |
-|----------|-------|
-| `SUPABASE_URL` | Your Supabase URL |
-| `SUPABASE_KEY` | Your Supabase anon key |
-| `OPENCLAW_URL` | OpenClaw URL (optional) |
-| `ENVIRONMENT` | production |
+## Supabase Setup
 
----
+1. Create project at https://supabase.com
+2. Run schema: `apps/supabase/schema.sql`
+3. Add env vars to Vercel
 
-## Deploy Backend (Render/Railway)
+## Current Status
 
-1. Connect GitHub repo to Render/Railway
-2. Root directory: `apps/api`
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `gunicorn main:app`
-
----
-
-## Database Setup (Supabase)
-
-1. Create Supabase project
-2. Run: `psql -f apps/supabase/schema.sql`
-3. Add credentials to environment variables
+- ✅ Code pushed to GitHub
+- ✅ 29 API endpoints ready
+- ⏳ Vercel deployment (needs token)
+- ⏳ Supabase setup (needs project)
