@@ -1,2 +1,9 @@
 !.gitkeep
 .vercel
+
+# Next.js build
+.next
+node_modules
+
+# TypeScript
+*.tsbuildinfo
