@@ -1,4 +1,4 @@
-// File: /root/.openclaw/workspace/ORGANIC-OS/apps/web/src/app/page.tsx
+// File: /root/.openclaw/workspaces/workflows/bug-fix/agents/triager/ORGANIC-OS/apps/web/src/app/page.tsx
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

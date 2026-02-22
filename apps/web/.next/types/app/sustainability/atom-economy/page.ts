@@ -1,4 +1,4 @@
-// File: /root/.openclaw/workspace/ORGANIC-OS/apps/web/src/app/sustainability/atom-economy/page.tsx
+// File: /root/.openclaw/workspaces/workflows/bug-fix/agents/triager/ORGANIC-OS/apps/web/src/app/sustainability/atom-economy/page.tsx
 import * as entry from '../../../../../src/app/sustainability/atom-economy/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
