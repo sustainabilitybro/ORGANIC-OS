@@ -1,11 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
+// Database types and helpers for Organic OS
+// This module provides TypeScript types and can be used with Supabase when credentials are configured
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Types for the database schema
 export interface User {
   id: string
   email: string
@@ -97,25 +92,34 @@ export interface WellnessTracker {
   created_at: string
 }
 
-// Helper function to check if Supabase is configured
+// Check if Supabase is configured
 export function isSupabaseConfigured(): boolean {
+  if (typeof window === 'undefined') return false
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   return !!(supabaseUrl && supabaseAnonKey && supabaseUrl !== '' && supabaseAnonKey !== '')
 }
 
-// Auth helpers
-export async function signUp(email: string, password: string) {
-  return supabase.auth.signUp({ email, password })
+// Supabase client - only import when needed
+let _supabase: any = null
+
+export async function getSupabase() {
+  if (!_supabase) {
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    _supabase = createClient(supabaseUrl, supabaseAnonKey)
+  }
+  return _supabase
 }
 
-export async function signIn(email: string, password: string) {
-  return supabase.auth.signInWithPassword({ email, password })
-}
-
-export async function signOut() {
-  return supabase.auth.signOut()
-}
-
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+export const supabase = {
+  async auth() {
+    const client = await getSupabase()
+    return client.auth
+  },
+  async from(table: string) {
+    const client = await getSupabase()
+    return client.from(table)
+  }
 }

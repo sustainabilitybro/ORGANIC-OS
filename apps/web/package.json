@@ -16,6 +16,7 @@
     "test:accessibility:check": "vitest run --config vitest.coverage.config.ts --check"
   },
   "dependencies": {
+    "@organic-os/database": "^1.0.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.39.0",
     "clsx": "^2.1.1",
