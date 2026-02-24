@@ -40,11 +40,11 @@ async function fetchRepo(owner: string, repo: string): Promise<Repo | null> {
 }
 
 export async function GET() {
-  // Featured repos to track
-  const repoNames = ['ORGANIC-OS', 'atom-economy', 'holistic-alchemy'];
+  // Featured repos to track - use exact casing for GitHub API
+  const repoNames = ['ORGANIC-OS', 'atom-economy', 'Holistic-Alchemy'];
   
   const repos = await Promise.all(
-    repoNames.map(name => fetchRepo(USER, name.toLowerCase()))
+    repoNames.map(name => fetchRepo(USER, name))
   );
   
   const validRepos = repos.filter((r): r is Repo => r !== null);
