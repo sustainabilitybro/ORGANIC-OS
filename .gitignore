@@ -7,3 +7,6 @@ node_modules
 
 # TypeScript
 *.tsbuildinfo
+
+# Build artifacts
+.next/
