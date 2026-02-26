@@ -5,6 +5,12 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
+// Mock window
+global.window = window;
+
+// Mock document
+global.document = document;
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
