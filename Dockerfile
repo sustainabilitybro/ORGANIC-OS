@@ -22,14 +22,18 @@ FROM node:20-alpine as frontend
 
 WORKDIR /app
 
-# Copy package files
-COPY apps/web/package*.json ./
+# Copy root package files for monorepo
+COPY package*.json ./
+COPY apps/web/package*.json ./apps/web/
+COPY packages/*/package*.json ./packages/
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (use npm install for monorepo)
+RUN npm install
 
 # Copy application
 COPY apps/web/ .
+COPY packages/ ./packages/
+COPY apps/api ./apps/api
 
 # Build for production
 RUN npm run build
@@ -41,9 +45,9 @@ FROM nginx:alpine as production
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy built frontend
-COPY --from=frontend /app/.next/static /usr/share/nginx/html/_next/static
-COPY --from=frontend /app/public /usr/share/nginx/html
-COPY --from=frontend /app/.next/server /usr/share/nginx/html
+COPY --from=frontend /app/apps/web/.next/static /usr/share/nginx/html/_next/static
+COPY --from=frontend /app/apps/web/public /usr/share/nginx/html
+COPY --from=frontend /app/apps/web/.next/server /usr/share/nginx/html
 
 EXPOSE 80 443
 
