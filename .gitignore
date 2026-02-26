@@ -10,3 +10,10 @@ node_modules
 
 # Build artifacts
 .next/
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+venv/
+env/
