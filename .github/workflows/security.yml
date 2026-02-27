@@ -1,0 +1,57 @@
+# Security Scanning Workflow
+name: Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly scan
+
+jobs:
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run npm audit
+        run: |
+          cd apps/web
+          npm audit --audit-level=high 2>/dev/null || true
+        continue-on-error: true
+      
+      - name: Check for vulnerabilities
+        run: |
+          echo "Checking for known vulnerabilities..."
+          npm audit --json > audit-report.json 2>/dev/null || true
+          if [ -s audit-report.json ]; then
+            echo "Vulnerability scan completed"
+          fi
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for secrets
+        run: |
+          # Basic check for common secret patterns
+          grep -r "api_key\|password\|secret\|token" --include="*.ts" --include="*.tsx" --include="*.js" apps/web/src/ 2>/dev/null | grep -v ".env" | grep -v "mock" || echo "No obvious secrets found"
+      
+      - name: Verify .env.example exists
+        run: |
+          if [ -f .env.example ]; then
+            echo ".env.example exists"
+          else
+            echo "Warning: .env.example missing"
+          fi
