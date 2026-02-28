@@ -120,6 +120,7 @@ class ContentVersionStore:
             content_type=content_type,
             current_version=version,
             total_versions=version,
+            created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
             status="active",
             author=author

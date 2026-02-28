@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 import time
 import asyncio
 from functools import wraps
-from typing import Callable, Any
+from typing import Callable, Any, List
 import hashlib
 import json
 
@@ -228,7 +228,7 @@ def _get_recommendations(stats: dict) -> List[str]:
 
 # ============ Performance Middleware ============
 
-@router.middleware("http")
+# @router.middleware("http")  # NOTE: Middleware must be added at app level, not router
 async def performance_middleware(request: Request, call_next):
     """Middleware to track request performance"""
     start = time.time()

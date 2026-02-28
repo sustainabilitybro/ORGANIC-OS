@@ -1,1 +1,1 @@
-from apps.api.routes.batch import router as batch_router
+from routes.batch import router as batch_router

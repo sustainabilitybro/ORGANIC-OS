@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 # Add routes and middleware directories to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, websocket, batch, rate_tuning
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, batch
 
 # Import middleware
 from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
@@ -167,7 +167,7 @@ app.include_router(api_versioning.router, prefix="/api/v1/versioning", tags=["AP
 app.include_router(content_versioning.router, prefix="/api/v1/content", tags=["Content Versioning"])
 app.include_router(additional_integrations.router, prefix="/api/v1/additional", tags=["Additional APIs"])
 app.include_router(resilience.router, prefix="/api/v1/resilience", tags=["Resilience"])
-app.include_router(websocket.router, prefix="/api/v1/ws", tags=["WebSocket"])
+# app.include_router(websocket.router, prefix="/api/v1/ws", tags=["WebSocket"])  # Not implemented
 app.include_router(batch.router, prefix="/api/v1/batch", tags=["Batch"])
 # Cache Optimization
 try:
@@ -182,7 +182,7 @@ try:
 except: pass
 
 # Rate Limit Tuning
-app.include_router(rate_tuning.router, prefix="/api/v1/rate-limits", tags=["Rate Limits"])
+# app.include_router(rate_tuning.router, prefix="/api/v1/rate-limits", tags=["Rate Limits"])  # Not implemented
 
 # Error Messages
 try:

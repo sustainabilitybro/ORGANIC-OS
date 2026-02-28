@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 from typing import Optional
 from pydantic import BaseModel
 
-from apps.api.resilience.circuit_breaker import (
+from resilience.circuit_breaker import (
     registry,
     CircuitBreaker,
     CircuitBreakerOpenError,
@@ -74,7 +74,7 @@ async def reset_circuit_breaker(name: str):
         raise HTTPException(status_code=404, detail=f"Circuit breaker '{name}' not found")
     
     breaker.state = CircuitState.CLOSED
-    from apps.api.resilience.circuit_breaker import CircuitBreakerStats
+    from resilience.circuit_breaker import CircuitBreakerStats
     breaker.stats = CircuitBreakerStats()
     
     return {"message": f"Circuit breaker '{name}' reset"}

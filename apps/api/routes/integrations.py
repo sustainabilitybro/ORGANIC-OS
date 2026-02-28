@@ -127,7 +127,7 @@ async def get_random_fact() -> Dict:
     
     return {"fact": "Honey never spoils. Archaeologists have found 3000-year-old honey in Egyptian tombs.", "source": "Fallback"}
 
-async function get_moon_phase() -> Dict:
+async def get_moon_phase() -> Dict:
     """Get current moon phase"""
     try:
         async with httpx.AsyncClient() as client:

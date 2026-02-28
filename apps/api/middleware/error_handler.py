@@ -6,7 +6,7 @@ Centralized error handling for Organic OS API.
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.exceptions import ExceptionMiddleware
+# ExceptionMiddleware removed in newer starlette versions
 from typing import Dict, Any, Optional
 import traceback
 import logging
