@@ -24,26 +24,33 @@ describe('Notifications API', () => {
   })
 
   describe('Notification Management', () => {
-    let notifications: Notification[] = []
+    const createNotificationManager = () => {
+      const notifications: Notification[] = []
 
-    const addNotification = (notification: Omit<Notification, 'id' | 'timestamp'>) => {
-      const newNotification: Notification = {
-        ...notification,
-        id: `notif_${Date.now()}`,
-        timestamp: Date.now()
+      const addNotification = (notification: Omit<Notification, 'id' | 'timestamp'>): string => {
+        const newNotification: Notification = {
+          ...notification,
+          id: `notif_${Date.now()}`,
+          timestamp: Date.now()
+        }
+        notifications.push(newNotification)
+        return newNotification.id
       }
-      notifications.push(newNotification)
-      return newNotification
-    }
 
-    const markAsRead = (id: string) => {
-      const notif = notifications.find(n => n.id === id)
-      if (notif) notif.read = true
-    }
+      const markAsRead = (id: string) => {
+        const notif = notifications.find(n => n.id === id)
+        if (notif) notif.read = true
+      }
 
-    const getUnreadCount = () => notifications.filter(n => !n.read).length
+      const getUnreadCount = () => notifications.filter(n => !n.read).length
+      
+      const getNotification = (id: string) => notifications.find(n => n.id === id)
+
+      return { addNotification, markAsRead, getUnreadCount, getNotification, notifications }
+    }
 
     it('should add notification', () => {
+      const { addNotification, notifications } = createNotificationManager()
       const initialCount = notifications.length
       addNotification({
         type: 'reminder',
@@ -55,18 +62,22 @@ describe('Notifications API', () => {
     })
 
     it('should mark as read', () => {
-      const notif = addNotification({
+      const { addNotification, markAsRead, getNotification } = createNotificationManager()
+      const id = addNotification({
         type: 'alert',
         title: 'Test',
         body: 'Test body',
         read: false
       })
-      markAsRead(notif.id)
-      expect(notif.read).toBe(true)
+      markAsRead(id)
+      const notif = getNotification(id)
+      expect(notif?.read).toBe(true)
     })
 
     it('should count unread', () => {
-      notifications = [] // Reset
+      const { addNotification, getUnreadCount, notifications } = createNotificationManager()
+      // Reset
+      notifications.length = 0
       addNotification({ type: 'reminder', title: '1', body: '', read: false })
       addNotification({ type: 'reminder', title: '2', body: '', read: true })
       addNotification({ type: 'reminder', title: '3', body: '', read: false })
@@ -116,12 +127,9 @@ describe('Notifications API', () => {
         const hour = date.getHours()
         const { start, end } = userPreferences.quietHours
         
-        // Handle quiet hours that span midnight
         if (start > end) {
-          // Quiet hours span midnight (e.g., 22:00 - 07:00)
           if (hour >= start || hour < end) return false
         } else {
-          // Normal range (e.g., 00:00 - 06:00)
           if (hour >= start && hour < end) return false
         }
       }
@@ -138,13 +146,11 @@ describe('Notifications API', () => {
     })
 
     it('should respect quiet hours that span midnight', () => {
-      // 2 AM - during quiet hours (22:00 - 07:00)
       const nightNotification: Notification = { 
         id: '1', type: 'reminder', title: 'Test', body: '', read: false, 
         timestamp: new Date('2026-01-01T02:00:00').getTime() 
       }
       
-      // 2 PM - outside quiet hours
       const dayNotification: Notification = { 
         id: '2', type: 'reminder', title: 'Test', body: '', read: false, 
         timestamp: new Date('2026-01-01T14:00:00').getTime() 
