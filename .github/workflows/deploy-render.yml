@@ -1,0 +1,49 @@
+# Deploy to Render/Railway alternative workflow
+
+name: Deploy to Render/Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: apps/web/.next
+
+  deploy-render:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+      
+      # Add Render deployment steps here
+      # See: https://render.com/docs/github
+      - name: Trigger Render Deploy
+        run: |
+          echo "Configure RENDER_SERVICE_ID in secrets to enable"
+          echo "See DEPLOYMENT_FULL_GUIDE.md for details"
