@@ -1,4 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   const manifest = {
@@ -7,8 +9,8 @@ export async function GET() {
     description: 'The Operating System for Being Human',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#10b981',
+    background_color: '#FAF8F5',
+    theme_color: '#6B7F3B',
     icons: [
       {
         src: '/icon-192.png',
@@ -21,9 +23,15 @@ export async function GET() {
         type: 'image/png'
       }
     ],
-    categories: ['health', 'fitness', 'lifestyle'],
-    lang: 'en-US'
-  };
-  
-  return NextResponse.json(manifest);
+    categories: ['lifestyle', 'health', 'productivity'],
+    lang: 'en-US',
+    scope: '/',
+    prefer_related_applications: false
+  }
+
+  return NextResponse.json(manifest, {
+    headers: {
+      'Cache-Control': 's-maxage=86400, stale-while-revalidate'
+    }
+  })
 }
