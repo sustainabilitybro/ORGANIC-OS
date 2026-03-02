@@ -10,6 +10,16 @@ interface Repo {
   language: string | null;
   url: string;
   updated_at: string;
+  open_issues: number;
+  watchers: number;
+  topics: string[];
+}
+
+interface Commit {
+  sha: string;
+  message: string;
+  author: string;
+  date: string;
 }
 
 async function fetchRepo(owner: string, repo: string): Promise<Repo | null> {
@@ -32,10 +42,37 @@ async function fetchRepo(owner: string, repo: string): Promise<Repo | null> {
       forks: data.forks_count,
       language: data.language,
       url: data.html_url,
-      updated_at: data.updated_at
+      updated_at: data.updated_at,
+      open_issues: data.open_issues_count,
+      watchers: data.watchers_count,
+      topics: data.topics || []
     };
   } catch {
     return null;
+  }
+}
+
+async function fetchRecentCommits(owner: string, repo: string): Promise<Commit[]> {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Organic-OS'
+      },
+      next: { revalidate: 1800 }
+    });
+    
+    if (!res.ok) return [];
+    
+    const data = await res.json();
+    return data.map((commit: any) => ({
+      sha: commit.sha.substring(0, 7),
+      message: commit.commit.message.split('\n')[0],
+      author: commit.commit.author.name,
+      date: commit.commit.author.date
+    }));
+  } catch {
+    return [];
   }
 }
 
@@ -49,8 +86,17 @@ export async function GET() {
   
   const validRepos = repos.filter((r): r is Repo => r !== null);
   
+  // Also fetch recent commits for each repo
+  const reposWithCommits = await Promise.all(
+    validRepos.map(async (repo) => {
+      const commits = await fetchRecentCommits(USER, repo.name);
+      return { ...repo, recent_commits: commits };
+    })
+  );
+  
   return NextResponse.json({ 
-    repos: validRepos, 
-    total: validRepos.length 
+    repos: reposWithCommits, 
+    total: reposWithCommits.length,
+    username: USER
   });
 }
