@@ -8,6 +8,7 @@ const pages = [
   '/communication',
   '/dashboard',
   '/emotional',
+  '/github',
   '/holistic-alchemy',
   '/identity',
   '/progress',
