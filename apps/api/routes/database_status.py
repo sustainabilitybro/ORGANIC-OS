@@ -101,3 +101,24 @@ async def reset_pool() -> Dict[str, Any]:
         "status": "reset",
         "message": "Connection pool reset"
     }
+
+
+# Try to import SQLite support (optional for local dev)
+try:
+    from database.sqlite import check_sqlite_health
+    SQLITE_AVAILABLE = True
+except ImportError:
+    SQLITE_AVAILABLE = False
+    check_sqlite_health = None
+
+
+@router.get("/sqlite/health")
+async def get_sqlite_health():
+    """Get SQLite database health status (for local development)"""
+    if not SQLITE_AVAILABLE:
+        return {
+            "status": "not_available",
+            "message": "SQLite support not installed"
+        }
+    
+    return await check_sqlite_health()
