@@ -65,7 +65,7 @@ export default function AgentChat() {
     } catch {
       setMessages([createWelcomeMessage(selectedAgent)])
     }
-  }, [selectedAgent.id])
+  }, [selectedAgent])
 
   // Scroll to bottom on new messages
   useEffect(() => {

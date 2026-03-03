@@ -119,7 +119,7 @@ export default function SearchBar() {
           placeholder="Search modules, exercises, prompts..."
           className="w-full pl-12 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
           aria-label="Search"
-          aria-expanded={isOpen}
+          
           aria-controls="search-results"
         />
         {query && (

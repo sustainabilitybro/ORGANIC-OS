@@ -2,6 +2,7 @@
 // Accessible, theme-aware React components
 
 import React, { forwardRef } from 'react';
+import Image from 'next/image';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -273,7 +274,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         {...props}
       >
         {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
+          <Image src={src} alt={alt} fill className="w-full h-full object-cover" />
         ) : (
           <span className="font-medium text-neutral-600 dark:text-neutral-300">
             {initials}
