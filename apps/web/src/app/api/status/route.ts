@@ -7,33 +7,71 @@ interface ServiceStatus {
   status: 'healthy' | 'degraded' | 'down'
   latency_ms: number
   last_check: string
+  details?: string
 }
 
-export async function GET() {
+async function checkGitHub(): Promise<ServiceStatus> {
   const start = Date.now()
-  
-  // Check GitHub API
-  const githubStart = Date.now()
-  let githubStatus: 'healthy' | 'degraded' | 'down' = 'healthy'
+  let status: 'healthy' | 'degraded' | 'down' = 'healthy'
+  let details = 'API responding'
   try {
     const res = await fetch('https://api.github.com', {
       method: 'HEAD',
       next: { revalidate: 0 }
     })
-    if (!res.ok) githubStatus = 'degraded'
-  } catch {
-    githubStatus = 'down'
-  }
-  const githubLatency = Date.now() - githubStart
-  
-  const services: ServiceStatus[] = [
-    {
-      name: 'GitHub API',
-      status: githubStatus,
-      latency_ms: githubLatency,
-      last_check: new Date().toISOString()
+    if (!res.ok) {
+      status = 'degraded'
+      details = `HTTP ${res.status}`
     }
-  ]
+  } catch (e) {
+    status = 'down'
+    details = e instanceof Error ? e.message : 'Connection failed'
+  }
+  return {
+    name: 'GitHub API',
+    status,
+    latency_ms: Date.now() - start,
+    last_check: new Date().toISOString(),
+    details
+  }
+}
+
+async function checkVercel(): Promise<ServiceStatus> {
+  const start = Date.now()
+  let status: 'healthy' | 'degraded' | 'down' = 'healthy'
+  let details = 'API responding'
+  try {
+    const res = await fetch('https://api.vercel.com', {
+      method: 'HEAD',
+      next: { revalidate: 0 }
+    })
+    if (!res.ok) {
+      status = 'degraded'
+      details = `HTTP ${res.status}`
+    }
+  } catch (e) {
+    status = 'down'
+    details = e instanceof Error ? e.message : 'Connection failed'
+  }
+  return {
+    name: 'Vercel API',
+    status,
+    latency_ms: Date.now() - start,
+    last_check: new Date().toISOString(),
+    details
+  }
+}
+
+export async function GET() {
+  const start = Date.now()
+  
+  // Run all checks in parallel
+  const [github, vercel] = await Promise.all([
+    checkGitHub(),
+    checkVercel()
+  ])
+  
+  const services: ServiceStatus[] = [github, vercel]
   
   const overall = services.every(s => s.status === 'healthy') 
     ? 'healthy' 
@@ -45,9 +83,10 @@ export async function GET() {
   
   return NextResponse.json({
     status: overall,
-    version: '2.0.0',
+    version: '2.1.0',
     timestamp: new Date().toISOString(),
     services,
-    response_time_ms: responseTime
+    response_time_ms: responseTime,
+    environment: process.env.NODE_ENV || 'development'
   })
 }
