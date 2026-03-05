@@ -37,6 +37,108 @@ docker exec -it remedies-db-postgres psql -U remedies_user -d remedies_db
 CREATE DATABASE organic_os;
 ```
 
+Then create the tables:
+
+```sql
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Core tables
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email TEXT UNIQUE NOT NULL,
+    full_name TEXT,
+    avatar_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE user_profiles (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    bio TEXT,
+    timezone TEXT DEFAULT 'UTC',
+    preferences JSONB DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE module_progress (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    module_name TEXT NOT NULL,
+    progress_percentage DECIMAL(5,2) DEFAULT 0,
+    last_activity TIMESTAMPTZ DEFAULT NOW(),
+    completed_topics TEXT[] DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, module_name)
+);
+
+CREATE TABLE wellness_tracker (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    date TEXT NOT NULL,
+    sleep_hours DECIMAL(5,2),
+    water_intake_ml INTEGER,
+    exercise_minutes INTEGER,
+    meditation_minutes INTEGER,
+    nutrition_notes TEXT,
+    mood_score DECIMAL(3,2),
+    energy_level DECIMAL(3,2),
+    ai_insights TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, date)
+);
+
+CREATE TABLE emotions_journal (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    emotion_name TEXT NOT NULL,
+    intensity DECIMAL(3,2),
+    triggers TEXT,
+    bodily_sensations TEXT,
+    thoughts TEXT,
+    behaviors TEXT,
+    regulation_strategy_used TEXT,
+    ai_suggestions JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE core_values (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    value_name TEXT NOT NULL,
+    description TEXT,
+    importance_score DECIMAL(3,2),
+    examples TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE user_entries (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    module_name TEXT NOT NULL,
+    topic_name TEXT NOT NULL,
+    entry_type TEXT NOT NULL,
+    content JSONB NOT NULL,
+    ai_insights JSONB,
+    is_favorite BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE life_purpose (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    draft_number INT DEFAULT 1,
+    draft_content TEXT NOT NULL,
+    ai_feedback TEXT,
+    is_finalized BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
 #### Option B: Local Supabase
 
 ```bash
@@ -74,42 +176,11 @@ cd apps/api
 python3 -m uvicorn main:app --reload --port 8000
 ```
 
-## Database Schema
-
-Run the following SQL to create the core tables:
-
-```sql
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Core tables
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email TEXT UNIQUE NOT NULL,
-    full_name TEXT,
-    avatar_url TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE user_profiles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    bio TEXT,
-    timezone TEXT DEFAULT 'UTC',
-    preferences JSONB DEFAULT '{}',
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- See supabase/migrations/001_initial_schema.sql for complete schema
-```
-
 ## Testing
 
 ```bash
 # Lint
-npm run lint
+cd apps/web && npm run lint
 
 # Build
 npm run build
