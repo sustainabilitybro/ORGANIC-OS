@@ -62,16 +62,45 @@ async function checkVercel(): Promise<ServiceStatus> {
   }
 }
 
+async function checkSupabase(): Promise<ServiceStatus> {
+  const start = Date.now()
+  let status: 'healthy' | 'degraded' | 'down' = 'healthy'
+  let details = 'Service available'
+  try {
+    // Just check if we can reach supabase
+    const res = await fetch('https://api.supabase.com', {
+      method: 'HEAD',
+      next: { revalidate: 0 }
+    })
+    if (!res.ok) {
+      status = 'degraded'
+      details = `HTTP ${res.status}`
+    }
+  } catch (e) {
+    // Supabase might not be configured - this is OK for local dev
+    status = 'degraded'
+    details = 'Not configured (OK for local dev)'
+  }
+  return {
+    name: 'Supabase',
+    status,
+    latency_ms: Date.now() - start,
+    last_check: new Date().toISOString(),
+    details
+  }
+}
+
 export async function GET() {
   const start = Date.now()
   
   // Run all checks in parallel
-  const [github, vercel] = await Promise.all([
+  const [github, vercel, supabase] = await Promise.all([
     checkGitHub(),
-    checkVercel()
+    checkVercel(),
+    checkSupabase()
   ])
   
-  const services: ServiceStatus[] = [github, vercel]
+  const services: ServiceStatus[] = [github, vercel, supabase]
   
   const overall = services.every(s => s.status === 'healthy') 
     ? 'healthy' 
@@ -83,7 +112,7 @@ export async function GET() {
   
   return NextResponse.json({
     status: overall,
-    version: '2.1.0',
+    version: '2.2.0',
     timestamp: new Date().toISOString(),
     services,
     response_time_ms: responseTime,
