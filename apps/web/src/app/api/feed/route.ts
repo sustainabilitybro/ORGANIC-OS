@@ -10,9 +10,33 @@ interface FeedItem {
   category?: string
 }
 
+async function getGitHubActivity(): Promise<FeedItem[]> {
+  try {
+    const res = await fetch('https://api.github.com/users/sustainabilitybro/events', {
+      next: { revalidate: 1800 }
+    })
+    if (!res.ok) return []
+    
+    const events = await res.json()
+    return events.slice(0, 5).map((event: any) => ({
+      title: `${event.type} in ${event.repo.name}`,
+      description: `Recent activity on GitHub`,
+      link: `https://github.com/${event.repo.name}`,
+      pubDate: event.created_at,
+      category: 'GitHub'
+    }))
+  } catch {
+    return []
+  }
+}
+
 export async function GET() {
   const baseUrl = 'https://organic-os.com'
-  const items: FeedItem[] = [
+  
+  // Get GitHub activity
+  const githubActivity = await getGitHubActivity()
+  
+  const staticItems: FeedItem[] = [
     {
       title: 'Welcome to Organic OS',
       description: 'The Operating System for Being Human - A comprehensive platform for personal development and wellness tracking.',
@@ -37,7 +61,14 @@ export async function GET() {
     {
       title: 'Atom Economy',
       description: 'Learn about sustainable chemistry and resource efficiency with our interactive tools.',
-      link: `${baseUrl}/atom-economy`,
+      link: `${baseUrl}/sustainability/atom-economy`,
+      pubDate: new Date().toISOString(),
+      category: 'Sustainability'
+    },
+    {
+      title: 'Holistic Alchemy',
+      description: 'Explore personal transformation with our comprehensive framework.',
+      link: `${baseUrl}/sustainability/holistic-alchemy`,
       pubDate: new Date().toISOString(),
       category: 'Sustainability'
     },
@@ -49,6 +80,9 @@ export async function GET() {
       category: 'Developer'
     }
   ]
+
+  // Combine static items with GitHub activity
+  const items = [...githubActivity, ...staticItems].slice(0, 15)
 
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -74,7 +108,7 @@ export async function GET() {
   return new NextResponse(feed, {
     headers: {
       'Content-Type': 'application/rss+xml',
-      'Cache-Control': 's-maxage=3600, stale-while-revalidate'
+      'Cache-Control': 's-maxage=1800, stale-while-revalidate'
     }
   })
 }
