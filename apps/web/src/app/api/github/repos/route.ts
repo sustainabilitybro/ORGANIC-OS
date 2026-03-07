@@ -77,14 +77,28 @@ async function fetchRecentCommits(owner: string, repo: string): Promise<Commit[]
 }
 
 export async function GET() {
-  // Featured repos to track - use exact casing for GitHub API
-  const repoNames = ['ORGANIC-OS', 'atom-economy', 'Holistic-Alchemy'];
+  // All repos from sustainabilitybro
+  const repoNames = [
+    'ORGANIC-OS', 
+    'atom-economy', 
+    'Holistic-Alchemy',
+    'Burnout',
+    'emotional-mastery',
+    'identity',
+    'naturopath',
+    'personal-os',
+    'sensory-dictionary',
+    'speaker'
+  ];
   
   const repos = await Promise.all(
     repoNames.map(name => fetchRepo(USER, name))
   );
   
   const validRepos = repos.filter((r): r is Repo => r !== null);
+  
+  // Sort by stars (most popular first)
+  validRepos.sort((a, b) => b.stars - a.stars);
   
   // Also fetch recent commits for each repo
   const reposWithCommits = await Promise.all(
@@ -94,9 +108,18 @@ export async function GET() {
     })
   );
   
+  // Calculate totals
+  const totals = {
+    stars: reposWithCommits.reduce((sum, r) => sum + r.stars, 0),
+    forks: reposWithCommits.reduce((sum, r) => sum + r.forks, 0),
+    issues: reposWithCommits.reduce((sum, r) => sum + r.open_issues, 0),
+    watchers: reposWithCommits.reduce((sum, r) => sum + r.watchers, 0)
+  };
+  
   return NextResponse.json({ 
     repos: reposWithCommits, 
     total: reposWithCommits.length,
+    totals,
     username: USER
   });
 }

@@ -14,12 +14,24 @@ interface Issue {
   created_at: string;
   updated_at: string;
   closed_at: string | null;
+  repo: string;
 }
 
 export async function GET() {
   try {
-    // Fetch issues across all repos
-    const repos = ['ORGANIC-OS', 'atom-economy', 'Holistic-Alchemy'];
+    // All repos from sustainabilitybro
+    const repos = [
+      'ORGANIC-OS', 
+      'atom-economy', 
+      'Holistic-Alchemy',
+      'Burnout',
+      'emotional-mastery',
+      'identity',
+      'naturopath',
+      'personal-os',
+      'sensory-dictionary',
+      'speaker'
+    ];
     
     const allIssues = await Promise.all(
       repos.map(async (repo) => {
@@ -39,7 +51,7 @@ export async function GET() {
           
           const data = await res.json();
           return data
-            .filter((issue: any) => !issue.pull_request) // Filter out PRs
+            .filter((issue: any) => !issue.pull_request)
             .map((issue: any) => ({
               id: issue.id,
               number: issue.number,
@@ -69,7 +81,11 @@ export async function GET() {
     
     return NextResponse.json({
       total: issues.length,
-      issues: issues.slice(0, 20) // Return top 20
+      issues: issues.slice(0, 30),
+      byRepo: repos.reduce((acc, repo) => {
+        acc[repo] = issues.filter((i: Issue) => i.repo === repo).length;
+        return acc;
+      }, {} as Record<string, number>)
     });
   } catch (error) {
     console.error('GitHub issues error:', error);
