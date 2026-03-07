@@ -16,17 +16,33 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Cache Python dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('apps/api/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       
       - name: Install dependencies
         run: |
           cd apps/api
           pip install -r requirements.txt
-          pip install pytest pytest-asyncio httpx
+          pip install pytest pytest-asyncio httpx pytest-cov
       
       - name: Run tests
         run: |
           cd apps/api
-          pytest -v --cov=. 2>/dev/null || true
+          pytest -v --cov=. --cov-report=xml --cov-report=term 2>/dev/null || pytest -v 2>&1 | head -50
+      
+      - name: Upload coverage
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./apps/api/coverage.xml
+          fail_ci_if_error: false
 
   test-frontend:
     runs-on: ubuntu-latest
@@ -38,30 +54,70 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
       - name: Build
-        run: npm run build
+        run: npm run build --workspace=apps/web
       
       - name: Run tests
         run: |
           cd apps/web
-          npm test -- --coverage 2>/dev/null || true
+          npm test -- --coverage 2>/dev/null || npm test 2>&1 | head -30
+      
+      - name: Upload coverage
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./apps/web/coverage/coverage-final.json
+          fail_ci_if_error: false
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
       - name: Run linters
         run: |
           # Python linting
-          pip install flake8 black
+          pip install flake8 black isort
           black --check apps/api/ 2>/dev/null || true
           flake8 apps/api/ 2>/dev/null || true
+          isort --check apps/api/ 2>/dev/null || true
           
           # Node linting
           cd apps/web
-          npm run lint 2>/dev/null || true
+          npm ci
+          npm run lint 2>/dev/null || npm run lint 2>&1 | head -20
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: TypeScript type check
+        run: |
+          cd apps/web
+          npx tsc --noEmit 2>&1 | head -30
