@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 # Add routes and middleware directories to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, batch
+from routes import auth, wellness, progress, modules, ai, openclaw, modules_data, integrations, performance, health_integrations, personal_integrations, auth_security, database_status, api_versioning, content_versioning, additional_integrations, resilience, batch, system_status
 
 # Import middleware
 from middleware.error_handler import setup_error_handlers, ErrorHandlingMiddleware, OrganicOSException, ValidationError, NotFoundError
@@ -191,6 +191,7 @@ app.include_router(personal_integrations.router, prefix="/api/v1/pis", tags=["Pe
 
 # Performance and monitoring
 app.include_router(performance.router, prefix="/api/v1/performance", tags=["Performance"])
+app.include_router(system_status.router, prefix="/api/v1/system", tags=["System"])
 
 # Database optimization
 app.include_router(database_status.router, prefix="/api/v1/database", tags=["Database"])
