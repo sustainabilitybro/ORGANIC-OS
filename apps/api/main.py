@@ -24,6 +24,29 @@ from middleware.security import setup_security_headers
 from middleware.audit import setup_audit_logging, log_auth_event, AuditEventType
 from middleware.performance_middleware import PerformanceMiddleware, get_metrics, get_health_status
 
+
+
+def validate_environment():
+    """Validate required environment variables at startup"""
+    errors = []
+    warnings = []
+    
+    # Check critical variables
+    if not os.getenv("SUPABASE_URL"):
+        warnings.append("SUPABASE_URL not set - using mock mode")
+    if not os.getenv("SUPABASE_ANON_KEY"):
+        warnings.append("SUPABASE_ANON_KEY not set - using mock mode")
+    if not os.getenv("SECRET_KEY"):
+        warnings.append("SECRET_KEY not set - using default (not secure for production)")
+    
+    # Check optional but recommended
+    if not os.getenv("GITHUB_TOKEN"):
+        warnings.append("GITHUB_TOKEN not set - GitHub API features limited")
+    if not os.getenv("OPENWEATHER_API_KEY"):
+        warnings.append("OPENWEATHER_API_KEY not set - Weather features disabled")
+    
+    return errors, warnings
+
 # Get allowed origins from environment (comma-separated)
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
@@ -39,6 +62,18 @@ async def lifespan(app: FastAPI):
     print(f"📍 Environment: {os.getenv('ENVIRONMENT', 'development')}")
     print(f"🔒 Security: Rate limiting enabled, Audit logging enabled")
     print(f"🔗 API Docs: /docs")
+    
+    # Validate environment
+    errors, warnings = validate_environment()
+    for w in warnings:
+        print(f"⚠️  {w}")
+    for e in errors:
+        print(f"❌ {e}")
+    
+    # Print configuration status
+    print(f"📊 Supabase: {'✓' if os.getenv('SUPABASE_URL') else '✗'}")
+    print(f"🔑 GitHub: {'✓' if os.getenv('GITHUB_TOKEN') else '✗'}")
+    print(f"🌤️  Weather: {'✓' if os.getenv('OPENWEATHER_API_KEY') else '✗'}")
     yield
     # Shutdown
     print("👋 Organic OS API shutting down...")
