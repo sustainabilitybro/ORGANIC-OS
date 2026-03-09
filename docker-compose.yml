@@ -1,41 +1,87 @@
 version: '3.8'
 
 services:
-  backend:
+  # Backend API (FastAPI)
+  api:
     build:
       context: .
       dockerfile: Dockerfile
       target: backend
+    container_name: organic-os-api
     ports:
       - "8000:8000"
     environment:
-      - SUPABASE_URL=${SUPABASE_URL}
+      - ENVIRONMENT=development
+      - SUPABASE_URL=${SUPABASE_URL:-http://localhost:54321}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/organic_os}
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
     volumes:
       - ./apps/api:/app
+      - /app/__pycache__
+      - /app/.pytest_cache
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
 
-  frontend:
+  # Frontend (Next.js with nginx)
+  web:
     build:
       context: .
       dockerfile: Dockerfile
       target: frontend
+    container_name: organic-os-web
     ports:
       - "3000:80"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL:-http://localhost:54321}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
     depends_on:
-      - backend
+      - api
+    restart: unless-stopped
 
-  # Optional: Database (if using local PostgreSQL)
+  # Database (PostgreSQL)
   postgres:
     image: postgres:15-alpine
+    container_name: organic-os-db
     environment:
       - POSTGRES_DB=organic_os
       - POSTGRES_USER=organic_os
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U organic_os -d organic_os"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: organic-os-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
 
 volumes:
   postgres_data:
+  redis_data:
