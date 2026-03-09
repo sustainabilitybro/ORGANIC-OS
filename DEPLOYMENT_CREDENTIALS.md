@@ -1,92 +1,132 @@
 # Deployment Credentials Guide
 
-This document outlines the credentials needed to complete the deployment of Organic OS.
+This document outlines the credentials needed for deploying Organic OS to production.
 
-## Current Status
+## Required Credentials
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| GitHub Repository | ✅ Deployed | https://github.com/sustainabilitybro/ORGANIC-OS |
-| Build & Tests | ✅ Passing | 183 tests, 0 lint errors |
-| Supabase | ⏳ Needs Credentials | Schema ready, needs project |
-| Vercel | ⏳ Needs Credentials | Workflow ready, needs token |
+### 1. Supabase (Database & Auth)
 
-## Supabase Setup
+**Create a Supabase project:**
+1. Go to [supabase.com](https://supabase.com)
+2. Create a new project
+3. Note the following from Settings > API:
+   - Project URL
+   - `service_role` key (keep secret!)
+   - `anon` public key
 
-### Required Credentials
-1. **SUPABASE_PROJECT_ID** - Your Supabase project ID
-2. **SUPABASE_URL** - Your project URL (e.g., https://xxxxx.supabase.co)
-3. **SUPABASE_ANON_KEY** - Anonymous key from Supabase dashboard
+**Environment variables:**
+```bash
+# Production
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # Keep secret!
 
-### Setup Steps
+# Frontend
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
 
-1. Create a Supabase project:
-   ```bash
-   supabase project create organic-os
-   ```
+**CLI commands:**
+```bash
+# Install Supabase CLI
+npm install -g supabase
 
-2. Get your credentials from Supabase Dashboard → Settings → API
+# Login
+supabase login
 
-3. Link your local project:
-   ```bash
-   supabase link --project-id YOUR_PROJECT_ID
-   ```
+# Link to project
+supabase link --project-ref your-project-ref
 
-4. Push the database schema:
-   ```bash
-   supabase db push
-   ```
+# Push migrations
+supabase db push
+```
 
-5. Add credentials to `.env.local`:
-   ```
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_ANON_KEY=your-anon-key
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-   ```
+### 2. Vercel (Frontend Hosting)
 
-## Vercel Deployment
+**Deploy via GitHub:**
+1. Go to [vercel.com](https://vercel.com)
+2. Import your GitHub repository
+3. Configure environment variables
+4. Deploy
 
-### Required Secrets (GitHub Repository Settings)
+**Environment variables:**
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_API_URL=https://your-api-domain.com
+```
 
-Add these secrets to your GitHub repository:
-
-1. **VERCEL_TOKEN** - Get from https://vercel.com/account/tokens
-2. **VERCEL_ORG_ID** - Found in Vercel project settings
-3. **VERCEL_PROJECT_ID** - Found in Vercel project settings
-
-### Alternative: Direct Vercel CLI Deployment
-
+**CLI commands:**
 ```bash
 # Install Vercel CLI
 npm install -g vercel
 
-# Login to Vercel
+# Login
 vercel login
 
 # Deploy
-cd apps/web
 vercel --prod
 ```
 
-## Already Integrated
+### 3. GitHub (CI/CD)
 
-The following repositories are already integrated into Organic OS:
-- atom-economy: https://github.com/sustainabilitybro/atom-economy
-- Holistic-Alchemy: https://github.com/sustainabilitybro/Holistic-Alchemy
+**Create a Personal Access Token:**
+1. Go to GitHub Settings > Developer settings > Personal access tokens
+2. Generate new token (classic) with:
+   - `repo` (full control)
+   - `workflow` (update workflows)
 
-## Quick Test Commands
+**Add to GitHub Secrets:**
+- Go to Repository Settings > Secrets
+- Add `VERCEL_TOKEN`
+- Add `VERCEL_ORG_ID`
+- Add `VERCEL_PROJECT_ID`
 
+### 4. Optional: Weather API
+
+**OpenWeatherMap:**
+1. Sign up at [openweathermap.org](https://openweathermap.org)
+2. Get free API key
+
+**Environment variable:**
 ```bash
-# Build the project
-npm run build
-
-# Run tests
-npm test
-
-# Run linter
-npm run lint
-
-# Start development server
-npm run dev
+OPENWEATHER_API_KEY=your-key
 ```
+
+## Quick Setup Checklist
+
+- [ ] Create Supabase project
+- [ ] Run database migrations
+- [ ] Get Supabase credentials
+- [ ] Configure Vercel environment
+- [ ] Deploy frontend
+- [ ] Test authentication
+- [ ] Set up custom domain (optional)
+
+## Security Notes
+
+1. **Never commit credentials to Git**
+2. Use environment variables, not hardcoded values
+3. Rotate secrets regularly
+4. Use separate credentials for dev/staging/prod
+5. Enable 2FA on all accounts
+
+## Troubleshooting
+
+### "No valid credentials"
+- Ensure `.env.local` is properly configured
+- Check that Supabase project is active
+
+### "Database connection failed"
+- Verify `DATABASE_URL` format
+- Check Supabase project status
+
+### "Authentication not working"
+- Verify `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Check that site URL is configured in Supabase
+
+## Support
+
+- **Supabase:** https://supabase.com/docs
+- **Vercel:** https://vercel.com/docs
+- **GitHub Actions:** https://docs.github.com/en/actions
