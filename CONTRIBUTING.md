@@ -4,76 +4,182 @@ Thank you for your interest in contributing to Organic OS!
 
 ## Development Workflow
 
-### 1. Fork & Clone
+### 1. Fork and Clone
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ORGANIC-OS.git
+git clone https://github.com/sustainabilitybro/ORGANIC-OS.git
 cd ORGANIC-OS
-npm install
 ```
 
-### 2. Create Feature Branch
+### 2. Set Up Development Environment
+
+```bash
+# Install all dependencies
+bash scripts/setup-full.sh
+
+# Or manually
+npm install
+cd apps/web && npm install && cd ../..
+cd apps/api && pip install -r requirements.txt
+```
+
+### 3. Create a Branch
 
 ```bash
 git checkout -b feature/your-feature-name
+# or
+git checkout -b fix/bug-description
 ```
 
-### 3. Make Changes
+### 4. Make Changes
 
-- Follow the code style
-- Add tests for new features
-- Update documentation
+Follow the code style:
+- **Python:** Black, flake8, isort
+- **TypeScript:** ESLint, Prettier
+- **Commit messages:** Conventional commits
 
-### 4. Commit & Push
+```bash
+# Lint before committing
+npm run lint  # Frontend
+flake8 apps/api/  # Backend
+```
+
+### 5. Write Tests
+
+```bash
+# Frontend tests
+cd apps/web
+npm run test
+
+# Backend tests
+cd apps/api
+pytest
+```
+
+### 6. Commit Changes
+
+We use Conventional Commits:
 
 ```bash
 git add .
-git commit -m "feat: Add your feature"
+git commit -m "feat: add new feature"
+git commit -m "fix: resolve bug"
+git commit -m "docs: update documentation"
+git commit -m "refactor: improve code structure"
+git commit -m "test: add unit tests"
+git commit -m "chore: update dependencies"
+```
+
+### 7. Push and Create PR
+
+```bash
 git push origin feature/your-feature-name
 ```
 
-### 5. Create Pull Request
-
-- Fill out the PR template
-- Link related issues
-- Request review
+Then open a Pull Request on GitHub.
 
 ## Code Standards
 
-### TypeScript
-- Use TypeScript strict mode
-- Prefer interfaces over types
-- Use meaningful variable names
-
 ### Python
-- Follow PEP 8
-- Use type hints
-- Document functions
 
-### Testing
-- Minimum 80% coverage
-- Test critical paths
-- Use descriptive test names
-
-## Commit Messages
-
-Use conventional commits:
-
-```
-feat: Add new feature
-fix: Fix a bug
-docs: Update documentation
-test: Add tests
-refactor: Refactor code
-chore: Maintenance
+```python
+# Use type hints
+def get_user(user_id: int) -> User:
+    """Get user by ID.
+    
+    Args:
+        user_id: The user's unique identifier.
+    
+    Returns:
+        User object if found.
+    
+    Raises:
+        ValueError: If user_id is invalid.
+    """
+    if user_id <= 0:
+        raise ValueError("Invalid user ID")
+    return User(id=user_id)
 ```
 
-## Questions?
+### TypeScript
 
+```typescript
+// Use interfaces over types for objects
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+}
+
+// Use arrow functions for callbacks
+const getUsers = async (): Promise<User[]> => {
+  const response = await fetch('/api/users');
+  return response.json();
+};
+```
+
+## Project Structure
+
+```
+ORGANIC-OS/
+├── apps/
+│   ├── web/          # Next.js frontend
+│   ├── api/          # FastAPI backend
+│   └── supabase/    # Database migrations
+├── packages/         # Shared packages
+├── scripts/          # Automation scripts
+├── .github/          # GitHub Actions
+└── docs/             # Documentation
+```
+
+## Testing Guidelines
+
+- Write tests for new features
+- Aim for 80% code coverage
+- Test edge cases
+- Include integration tests for APIs
+
+## Commit Message Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+Types:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation
+- `style`: Formatting
+- `refactor`: Code restructuring
+- `test`: Tests
+- `chore`: Maintenance
+
+## Pull Request Checklist
+
+- [ ] Code follows style guidelines
+- [ ] Tests pass locally
+- [ ] Documentation updated
+- [ ] Commits are atomic
+- [ ] PR description is clear
+
+## Getting Help
+
+- GitHub Discussions
+- Discord community
 - Open an issue
-- Join our Discord
-- Email don@altlaboratories.com
+
+## Code of Conduct
+
+Be respectful and inclusive. Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Recognition
+
+Contributors will be added to the README and acknowledged in releases.
 
 ---
 
-Thank you for contributing!
+Thank you for contributing to Organic OS! 🚀
