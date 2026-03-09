@@ -12,20 +12,41 @@
   },
   "scripts": {
     "dev": "npm run dev --workspace=apps/web",
+    "dev:api": "cd apps/api && python3 -m uvicorn main:app --reload",
     "build": "npm run build --workspace=apps/web",
+    "build:all": "npm run build --workspace=apps/web && cd apps/api && python3 -m compileall .",
+    "start": "cd apps/web && npm run start",
+    "test": "npm run test --workspaces --if-present",
+    "test:web": "cd apps/web && npm run test",
+    "test:api": "cd apps/api && pytest",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:web": "cd apps/web && npm run lint",
+    "lint:api": "cd apps/api && flake8 .",
+    "typecheck": "cd apps/web && npx tsc --noEmit",
     "db:generate": "npm run db:generate --workspace=packages/database",
     "db:migrate": "npm run db:migrate --workspace=packages/database",
-    "db:seed": "npm run db:seed --workspace=packages/database"
+    "db:seed": "npm run db:seed --workspace=packages/database",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "setup": "bash scripts/setup-full.sh",
+    "deploy:vercel": "cd apps/web && npx vercel --prod",
+    "deploy:docker": "docker-compose build && docker-compose push"
   },
   "keywords": [
-    "humanos",
+    "organic-os",
     "personal-development",
     "wellness",
-    "communication"
+    "human-growth",
+    "self-improvement"
   ],
-  "author": "Don Qui AI",
+  "author": "ALT Laboratories",
   "license": "MIT",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "python": ">=3.11"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }
