@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card, Button, Spinner } from '@/components/design-system'
-import { Star, GitFork, Eye, AlertCircle, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react'
+import { Star, GitFork, Eye, AlertCircle, CheckCircle, XCircle, Clock, ArrowRight, Code } from 'lucide-react'
 
 interface Repo {
   name: string
@@ -50,21 +50,48 @@ interface Issue {
   repo: string
 }
 
+interface Language {
+  name: string;
+  bytes: number;
+  percentage: string;
+}
+
+// Language colors
+const languageColors: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#f7df1e',
+  Python: '#3572A5',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Shell: '#89e051',
+  Go: '#00ADD8',
+  Rust: '#dea584',
+  Java: '#b07219',
+  Ruby: '#701516',
+  PHP: '#4F5D95',
+  'C++': '#f34b7d',
+  C: '#555555',
+  Swift: '#F05138',
+  Kotlin: '#A97BFF'
+};
+
 export default function GitHubDashboard() {
   const [repos, setRepos] = useState<Repo[]>([])
   const [workflows, setWorkflows] = useState<WorkflowRun[]>([])
   const [issues, setIssues] = useState<Issue[]>([])
+  const [languages, setLanguages] = useState<Language[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'overview' | 'workflows' | 'issues'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'workflows' | 'issues' | 'languages'>('overview')
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [reposRes, workflowsRes, issuesRes] = await Promise.all([
+        const [reposRes, workflowsRes, issuesRes, langRes] = await Promise.all([
           fetch('/api/github/repos'),
           fetch('/api/github/actions'),
-          fetch('/api/github/issues')
+          fetch('/api/github/issues'),
+          fetch('/api/github/languages')
         ])
 
         if (!reposRes.ok || !workflowsRes.ok || !issuesRes.ok) {
@@ -74,10 +101,12 @@ export default function GitHubDashboard() {
         const reposData = await reposRes.json()
         const workflowsData = await workflowsRes.json()
         const issuesData = await issuesRes.json()
+        const langData = await langRes.json()
 
         setRepos(reposData.repos || [])
         setWorkflows(workflowsData.runs || [])
         setIssues(issuesData.issues || [])
+        setLanguages(langData.languages || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
@@ -187,7 +216,7 @@ export default function GitHubDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-4 mb-6 border-b border-gray-200">
-          {(['overview', 'workflows', 'issues'] as const).map((tab) => (
+          {(['overview', 'workflows', 'issues', 'languages'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -321,6 +350,52 @@ export default function GitHubDashboard() {
                 </div>
               </Card>
             ))}
+          </div>
+        )}
+
+
+        {activeTab === 'languages' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Language Distribution</h3>
+              <div className="space-y-3">
+                {languages.slice(0, 10).map((lang) => (
+                  <div key={lang.name} className="flex items-center gap-3">
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: languageColors[lang.name] || '#888' }}
+                    />
+                    <span className="w-24 font-medium">{lang.name}</span>
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${lang.percentage}%`,
+                          backgroundColor: languageColors[lang.name] || '#888'
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-500 w-16 text-right">
+                      {lang.percentage}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Top Languages</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {languages.slice(0, 8).map((lang, i) => (
+                  <div key={lang.name} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <span className="text-2xl font-bold text-[#6B7F3B]">#{i + 1}</span>
+                    <div>
+                      <p className="font-medium">{lang.name}</p>
+                      <p className="text-sm text-gray-500">{lang.percentage}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
         )}
       </div>
