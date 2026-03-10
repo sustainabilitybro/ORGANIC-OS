@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Card, Button, Spinner } from '@/components/design-system'
+import { ArrowRight } from 'lucide-react'
 
 // Atom Economy - Optimizing resource efficiency
 interface AtomProcess {
@@ -115,6 +116,18 @@ export default function AtomEconomyPage() {
     <div className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
       {/* Header */}
       <div className="mb-12">
+      {/* GitHub Link */}
+      <div className="mb-4">
+        <a
+          href="https://github.com/sustainabilitybro/atom-economy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-accent-primary transition-colors"
+        >
+          <span>View on GitHub</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </div>
         <div className="flex items-center gap-4 mb-2">
           <span className="text-5xl">⚛️</span>
           <div>
@@ -139,6 +152,18 @@ export default function AtomEconomyPage() {
 
       {/* Green Chemistry Principles */}
       <div className="mb-12">
+      {/* GitHub Link */}
+      <div className="mb-4">
+        <a
+          href="https://github.com/sustainabilitybro/atom-economy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-accent-primary transition-colors"
+        >
+          <span>View on GitHub</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </div>
         <h2 className="text-lg font-semibold mb-4 text-text-muted uppercase tracking-wider">
           12 Principles of Green Chemistry
         </h2>

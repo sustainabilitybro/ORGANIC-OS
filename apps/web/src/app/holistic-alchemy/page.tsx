@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Card, Button, Spinner } from '@/components/design-system'
+import { ArrowRight } from 'lucide-react'
 
 // Holistic Alchemy - Toxins literacy and systems-first lifestyle
 interface ToxinCategory {
@@ -105,6 +106,15 @@ export default function HolisticAlchemyPage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 p-8">
       <div className="max-w-6xl mx-auto">
         <header className="mb-12">
+          <a
+            href="https://github.com/sustainabilitybro/Holistic-Alchemy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-accent-primary transition-colors mb-4"
+          >
+            <span>View on GitHub</span>
+            <ArrowRight className="w-4 h-4" />
+          </a>
           <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
             Holistic Alchemy
           </h1>
