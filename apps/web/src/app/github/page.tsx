@@ -76,7 +76,7 @@ export default function GitHubDashboard() {
         const issuesData = await issuesRes.json()
 
         setRepos(reposData.repos || [])
-        setWorkflows(workflowsData.workflow_runs || [])
+        setWorkflows(workflowsData.runs || [])
         setIssues(issuesData.issues || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error')
