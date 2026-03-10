@@ -7,11 +7,11 @@ interface Contributor {
   avatar_url: string;
   contributions: number;
   html_url: string;
+  type: string;
 }
 
 export async function GET() {
   try {
-    // Get contributors across all repos
     const repos = [
       'ORGANIC-OS', 
       'atom-economy', 
@@ -19,7 +19,10 @@ export async function GET() {
       'Burnout',
       'emotional-mastery',
       'identity',
-      'personal-os'
+      'naturopath',
+      'personal-os',
+      'sensory-dictionary',
+      'speaker'
     ];
     
     const allContributors = await Promise.all(
@@ -39,8 +42,12 @@ export async function GET() {
           if (!res.ok) return [];
           
           const data = await res.json();
-          return data.map((contributor: any) => ({
-            ...contributor,
+          return data.map((c: any) => ({
+            login: c.login,
+            avatar_url: c.avatar_url,
+            contributions: c.contributions,
+            html_url: c.html_url,
+            type: c.type,
             repo
           }));
         } catch {
@@ -52,28 +59,26 @@ export async function GET() {
     const contributors = allContributors.flat();
     
     // Aggregate by user
-    const aggregated = contributors.reduce((acc, c) => {
-      if (!acc[c.login]) {
-        acc[c.login] = {
+    const byUser: Record<string, Contributor> = {};
+    contributors.forEach((c: any) => {
+      if (!byUser[c.login]) {
+        byUser[c.login] = {
           login: c.login,
           avatar_url: c.avatar_url,
           contributions: 0,
           html_url: c.html_url,
-          repos: []
+          type: c.type
         };
       }
-      acc[c.login].contributions += c.contributions;
-      acc[c.login].repos.push(c.repo);
-      return acc;
-    }, {} as Record<string, any>);
+      byUser[c.login].contributions += c.contributions;
+    });
     
-    const sortedContributors = Object.values(aggregated)
-      .sort((a: any, b: any) => b.contributions - a.contributions)
-      .slice(0, 20);
+    const sorted = Object.values(byUser).sort((a, b) => b.contributions - a.contributions);
     
     return NextResponse.json({
-      total: sortedContributors.length,
-      contributors: sortedContributors
+      top_contributors: sorted.slice(0, 20),
+      total_contributors: sorted.length,
+      repos_tracked: repos.length
     });
   } catch (error) {
     console.error('GitHub contributors error:', error);
