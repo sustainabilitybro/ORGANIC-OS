@@ -3,60 +3,69 @@ import { NextResponse } from 'next/server';
 const USER = 'sustainabilitybro';
 
 interface LanguageStats {
-  [language: string]: number;
+  [key: string]: number;
 }
 
 export async function GET() {
   try {
-    // Fetch all repos
-    const res = await fetch(
-      `https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`,
-      {
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'Organic-OS'
-        },
-        next: { revalidate: 3600 }
-      }
+    const repos = [
+      'ORGANIC-OS', 
+      'atom-economy', 
+      'Holistic-Alchemy',
+      'Burnout',
+      'emotional-mastery',
+      'identity',
+      'naturopath',
+      'personal-os',
+      'sensory-dictionary',
+      'speaker'
+    ];
+    
+    const allLanguages: LanguageStats = {};
+    
+    await Promise.all(
+      repos.map(async (repo) => {
+        try {
+          const res = await fetch(
+            `https://api.github.com/repos/${USER}/${repo}/languages`,
+            {
+              headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'Organic-OS'
+              },
+              next: { revalidate: 86400 } // Cache for 24 hours
+            }
+          );
+          
+          if (!res.ok) return;
+          
+          const data = await res.json();
+          Object.entries(data).forEach(([lang, bytes]: [string, any]) => {
+            allLanguages[lang] = (allLanguages[lang] || 0) + bytes;
+          });
+        } catch {
+          // Skip failed repos
+        }
+      })
     );
     
-    if (!res.ok) {
-      return NextResponse.json({ error: 'Failed to fetch repos' }, { status: res.status });
-    }
-    
-    const repos = await res.json();
-    
-    // Aggregate language stats
-    const languageStats: LanguageStats = {};
-    let totalRepos = 0;
-    
-    for (const repo of repos) {
-      if (repo.language) {
-        if (!languageStats[repo.language]) {
-          languageStats[repo.language] = 0;
-        }
-        languageStats[repo.language]++;
-        totalRepos++;
-      }
-    }
-    
-    // Convert to percentages and sort
-    const languages = Object.entries(languageStats)
-      .map(([name, count]) => ({
+    // Convert to percentages
+    const total = Object.values(allLanguages).reduce((sum, v) => sum + v, 0);
+    const languages = Object.entries(allLanguages)
+      .map(([name, bytes]) => ({
         name,
-        count,
-        percentage: totalRepos > 0 ? Math.round((count / totalRepos) * 100) : 0
+        bytes,
+        percentage: ((bytes / total) * 100).toFixed(2)
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.bytes - a.bytes);
     
     return NextResponse.json({
-      totalRepos: repos.length,
-      totalLanguages: languages.length,
       languages,
-      timestamp: new Date().toISOString()
+      total_bytes: total,
+      repo_count: repos.length
     });
   } catch (error) {
     console.error('GitHub languages error:', error);
-    return NextResponse.json({ error: 'Failed to fetch language data' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch languages' }, { status: 500 });
   }
 }
