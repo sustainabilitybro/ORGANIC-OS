@@ -1,48 +1,67 @@
-# Recent Updates (March 2026)
+# Organic OS - Update March 2026
 
-## New Features
+## What's New
 
-### GitHub Dashboard Enhancements
-- Added contributors API (`/api/github/contributors`)
-- Added languages API (`/api/github/languages`)
-- Added overview API (`/api/github`)
-- Track all 10 repos (previously only 3)
+### Features Added Tonight
+- **GitHub Dashboard**: Enhanced with languages tab showing tech stack distribution
+- **System Status Page**: New `/status` page monitoring GitHub, Supabase, and Vercel
+- **GitHub APIs**: New endpoints for contributors and language statistics
+- **Atom Economy Page**: Now includes link to GitHub repo
+- **Holistic Alchemy Page**: Now includes link to GitHub repo
 
-### API Improvements
-- Enhanced health endpoint with memory and CPU stats
-- Enhanced stats endpoint with uptime tracking
-- Added global error handler
+### API Endpoints
+| Endpoint | Description |
+|----------|-------------|
+| `/api/github/repos` | List all repositories with stats |
+| `/api/github/actions` | GitHub Actions workflow runs |
+| `/api/github/issues` | Open issues across all repos |
+| `/api/github/languages` | Aggregated language statistics |
+| `/api/github/contributors` | Top contributors across repos |
+| `/api/github/search` | Search code and repos |
+| `/api/system` | System health status |
+| `/api/stats` | GitHub overview statistics |
 
-### Developer Experience
-- Added setup script (`scripts/setup.sh`)
-- Added deployment script (`scripts/deploy.sh`)
-- Added database initialization script (`scripts/init-db.sh`)
-- Added environment configuration (`config/environments.ts`)
-- Added application constants (`config/constants.ts`)
+### Pages
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage with module navigation |
+| `/github` | GitHub dashboard with repos, workflows, issues, languages |
+| `/atom-economy` | Green chemistry calculations |
+| `/holistic-alchemy` | Toxin awareness and substitution |
+| `/status` | System health monitoring |
+| `/dashboard/*` | User dashboard modules |
 
-### Documentation
-- Added comprehensive API documentation
-- Added deployment checklist
-- Added quick reference guide
+### Modules (Under Development)
+- Identity
+- Sensory
+- Emotional
+- Wellness
+- Recovery
+- Communication
 
-### CI/CD
-- Improved CI workflow with better caching
-- Added coverage reporting
-- Added type checking job
+## Deployment
 
-## Breaking Changes
-- None
+See [DEPLOYMENT_NOW.md](./DEPLOYMENT_NOW.md) for detailed instructions.
 
-## Deprecations
-- None
+## Tech Stack
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Python/FastAPI
+- **Database**: Supabase (PostgreSQL)
+- **Auth**: Supabase Auth
+- **Hosting**: Vercel
 
-## Migration Guide
-No migration needed for existing installations.
+## Getting Started
 
-## Contributors
-- OpenClaw (autonomous agent)
+```bash
+# Install dependencies
+npm install
 
-## Stats
-- Commits this session: 13
-- Lines added: ~1,067
-- Total commits: 212
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+```
