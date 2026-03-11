@@ -3,9 +3,9 @@ import pytest
 import sys
 from pathlib import Path
 
-# Add the app directory to the path
-app_dir = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(app_dir))
+# Add the ORGANIC-OS root to the path so apps.api imports work
+root_dir = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(root_dir))
 
 # Pytest configuration
 pytest_plugins = ['pytest_asyncio']

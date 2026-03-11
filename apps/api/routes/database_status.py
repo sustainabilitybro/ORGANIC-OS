@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/v1/database", tags=["Database"])
 
 # Try to import database optimization (optional)
 try:
-    from database.optimized import (
+    from apps.api.database.optimized import (
         get_connection_info,
         check_database_health,
         query_cache,
@@ -105,7 +105,7 @@ async def reset_pool() -> Dict[str, Any]:
 
 # Try to import SQLite support (optional for local dev)
 try:
-    from database.sqlite import check_sqlite_health
+    from apps.api.database.sqlite import check_sqlite_health
     SQLITE_AVAILABLE = True
 except ImportError:
     SQLITE_AVAILABLE = False
