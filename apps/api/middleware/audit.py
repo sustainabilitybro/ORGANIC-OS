@@ -6,7 +6,7 @@ Comprehensive audit trail for all sensitive operations.
 from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from typing import Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 import json
 import uuid
