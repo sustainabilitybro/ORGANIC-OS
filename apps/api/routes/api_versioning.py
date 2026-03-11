@@ -8,7 +8,7 @@ Support for multiple API versions:
 """
 from fastapi import APIRouter, Request, Depends, HTTPException, Header
 from typing import Dict, Any, Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 router = APIRouter(prefix="/api/v1", tags=["API Versioning"])
@@ -78,7 +78,7 @@ class DeprecationWarning:
         if config["status"] == "deprecated":
             # Only warn once per user per day
             warning_key = f"{user_id}:{version}"
-            now = datetime.utcnow().isoformat()
+            now = datetime.now(timezone.utc).isoformat()
             
             return {
                 "deprecated": True,
@@ -243,7 +243,7 @@ async def version_health_check(version: str):
         "version": version,
         "status": "healthy",
         "api_status": API_VERSIONS[version]["status"],
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 

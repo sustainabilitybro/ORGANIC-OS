@@ -261,7 +261,7 @@ async def health_check():
         "status": "healthy",
         "version": "2.0.0",
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "timestamp": str(__import__('datetime').datetime.utcnow().isoformat())
+        "timestamp": str(__import__('datetime').datetime.now(timezone.utc).isoformat())
     }
 
 

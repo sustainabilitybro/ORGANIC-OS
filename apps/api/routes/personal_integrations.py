@@ -6,7 +6,7 @@ User-specific integrations for calendar, weather, habits, preferences, and conne
 from fastapi import APIRouter, HTTPException, Request
 from typing import Dict, List, Optional, Any
 from pydantic import BaseModel
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 import httpx
 import json
 
@@ -63,7 +63,7 @@ async def set_preference(pref: PersonalPreference):
         user_preferences[pref.user_id] = {}
     user_preferences[pref.user_id][f"{pref.category}.{pref.key}"] = {
         "value": pref.value,
-        "updated_at": datetime.utcnow().isoformat()
+        "updated_at": datetime.now(timezone.utc).isoformat()
     }
     return {"success": True, "preference": pref}
 
@@ -88,14 +88,14 @@ async def get_habits(user_id: str = "default"):
 async def create_habit(habit: Dict, user_id: str = "default"):
     """Create a new habit"""
     new_habit = {
-        "id": f"habit_{datetime.utcnow().timestamp()}",
+        "id": f"habit_{datetime.now(timezone.utc).timestamp()}",
         "name": habit.get("name"),
         "category": habit.get("category", "general"),
         "frequency": habit.get("frequency", "daily"),
         "reminder_time": habit.get("reminder_time"),
         "streak": 0,
         "best_streak": 0,
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         "entries": []
     }
     if user_id not in user_habits:
@@ -131,7 +131,7 @@ async def get_goals(user_id: str = "default"):
 async def create_goal(goal: Dict, user_id: str = "default"):
     """Create a new goal"""
     new_goal = {
-        "id": f"goal_{datetime.utcnow().timestamp()}",
+        "id": f"goal_{datetime.now(timezone.utc).timestamp()}",
         "title": goal.get("title"),
         "description": goal.get("description"),
         "category": goal.get("category", "personal"),
@@ -139,7 +139,7 @@ async def create_goal(goal: Dict, user_id: str = "default"):
         "milestones": goal.get("milestones", []),
         "progress": 0,
         "status": "active",
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
     if user_id not in user_goals:
         user_goals[user_id] = []

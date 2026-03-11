@@ -9,7 +9,7 @@ import os
 import sys
 import platform
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/api/v1/system", tags=["system"])
 
@@ -19,7 +19,7 @@ async def get_system_status() -> Dict[str, Any]:
     """Get comprehensive system status"""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "uptime": get_uptime(),
         "version": os.getenv("APP_VERSION", "2.0.0"),
         "environment": os.getenv("ENVIRONMENT", "development"),
@@ -84,7 +84,7 @@ async def get_diagnostics() -> Dict[str, Any]:
     })
     
     return {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "checks": checks,
         "overall": "healthy" if all(c["status"] == "ok" for c in checks) else "degraded"
     }

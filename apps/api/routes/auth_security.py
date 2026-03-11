@@ -10,7 +10,7 @@ Security improvements for authentication:
 from fastapi import FastAPI, HTTPException, Depends, status, APIRouter, Body
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Optional, Dict, List
 import jwt
 import hashlib
@@ -73,7 +73,7 @@ def create_access_token(
     additional_claims: Dict = None
 ) -> tuple:
     """Create a new access token"""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     token_id = generate_token_id()
     
     payload = {
@@ -94,7 +94,7 @@ def create_access_token(
 
 def create_refresh_token(user_id: str, session_id: str) -> tuple:
     """Create a refresh token"""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     token_id = generate_token_id()
     
     payload = {
@@ -284,8 +284,8 @@ def create_session(
     session = SessionInfo(
         session_id=session_id,
         user_id=user_id,
-        created_at=datetime.utcnow(),
-        last_used_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        last_used_at=datetime.now(timezone.utc),
         ip_address=ip_address,
         user_agent=user_agent,
         is_active=True
@@ -298,7 +298,7 @@ def create_session(
 def update_session_activity(session_id: str):
     """Update session last used timestamp"""
     if session_id in _session_store:
-        _session_store[session_id]["last_used_at"] = datetime.utcnow().isoformat()
+        _session_store[session_id]["last_used_at"] = datetime.now(timezone.utc).isoformat()
 
 def terminate_session(session_id: str) -> bool:
     """Terminate a session"""

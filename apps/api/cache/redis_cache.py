@@ -302,7 +302,7 @@ class MemoryCache:
     
     def _clean_expired(self):
         """Remove expired entries"""
-        now = datetime.utcnow().timestamp()
+        now = datetime.now(timezone.utc).timestamp()
         expired = [k for k, v in self._timestamps.items() if v <= 0 or now > v]
         for k in expired:
             self._store.pop(k, None)

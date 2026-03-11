@@ -10,7 +10,7 @@ Track changes to module content:
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 import uuid
 import json
@@ -89,8 +89,8 @@ class ContentVersionStore:
                 content_type=content_type,
                 current_version=1,
                 total_versions=1,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
                 status="active",
                 author=author
             )
@@ -104,7 +104,7 @@ class ContentVersionStore:
             content=new_content,
             change_type=change_type,
             author=author,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
             comment=comment,
             checksum=checksum
         )
@@ -120,8 +120,8 @@ class ContentVersionStore:
             content_type=content_type,
             current_version=version,
             total_versions=version,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
             status="active",
             author=author
         )

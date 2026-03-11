@@ -4,7 +4,7 @@ Logging Enhancement - Structured logging and log aggregation
 
 import logging
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 from contextlib import contextmanager
 from functools import wraps
@@ -27,7 +27,7 @@ class StructuredLogger:
     def log(self, level: str, message: str, **kwargs):
         """Log with structured data"""
         log_entry = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "level": level,
             "message": message,
             "service": "organic-os-api",
@@ -209,8 +209,8 @@ async def get_sample_logs():
     # In production, this would query log aggregation system
     return {
         "logs": [
-            {"timestamp": datetime.utcnow().isoformat(), "level": "INFO", "message": "Request completed"},
-            {"timestamp": datetime.utcnow().isoformat(), "level": "INFO", "message": "Health check passed"},
+            {"timestamp": datetime.now(timezone.utc).isoformat(), "level": "INFO", "message": "Request completed"},
+            {"timestamp": datetime.now(timezone.utc).isoformat(), "level": "INFO", "message": "Health check passed"},
         ],
         "total": 2
     }

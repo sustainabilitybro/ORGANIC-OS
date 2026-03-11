@@ -83,7 +83,7 @@ class AuditEvent:
         error_message: Optional[str] = None
     ):
         self.event_id = str(uuid.uuid4())
-        self.timestamp = datetime.utcnow().isoformat()
+        self.timestamp = datetime.now(timezone.utc).isoformat()
         self.event_type = event_type.value
         self.user_id = user_id
         self.severity = severity.value
