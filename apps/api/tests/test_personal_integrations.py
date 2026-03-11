@@ -130,8 +130,8 @@ def test_add_calendar_event():
     """Test adding a calendar event"""
     event_data = {
         "title": "Team Meeting",
-        "start": datetime.utcnow().isoformat(),
-        "end": (datetime.utcnow() + timedelta(hours=1)).isoformat(),
+        "start": datetime.now(timezone.utc).isoformat(),
+        "end": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
         "category": "work",
         "description": "Weekly sync"
     }

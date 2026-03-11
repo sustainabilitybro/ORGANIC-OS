@@ -44,7 +44,7 @@ class MockDatabase:
         self.queries.append({
             "query": query[:100],
             "params": str(params)[:50] if params else None,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "duration": time.time() - start
         })
         return {"rows": [], "count": 0}
